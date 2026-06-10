@@ -1,0 +1,36 @@
+# Dependencies and builds
+node_modules/
+.next/
+out/
+coverage/
+*.log
+
+# Local configuration
+.env
+.env.*
+!.env.example
+.vercel/
+
+# Local design sessions
+.superpowers/
+.impeccable/
+
+# macOS metadata
+._*
+.DS_Store
+
+# Original source material kept outside Git
+/CONTEUDOS/
+/SITES/
+/logo/
+/DSC_*.JPG
+/*.docx
+/*.pdf
+/*.pptx
+/*.jpg
+/*.png
+
+# Runtime content and uploads for cPanel/local mode
+/data/runtime/
+/public/uploads/
+
