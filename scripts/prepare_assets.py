@@ -26,6 +26,8 @@ def slug(value: str) -> str:
 def category_for(number: int) -> str:
     if 3965 <= number <= 3982:
         return "infraestruturas"
+    if number == 3989:
+        return "infraestruturas"
     if 3983 <= number <= 3987:
         return "navios"
     if number in {3999, 4000}:
@@ -34,6 +36,11 @@ def category_for(number: int) -> str:
 
 
 def alt_for(number: int, category: str) -> str:
+    if number == 3989:
+        return "Edifício da Administração dos Portos da Guiné-Bissau no Porto de Bissau"
+    if number == 4003:
+        return "Director-Geral da APGB no seu gabinete"
+
     descriptions = {
         "infraestruturas": f"Infra-estruturas e parque de contentores do Porto de Bissau, fotografia {number}",
         "navios": f"Navio e actividade marítima no Porto de Bissau, fotografia {number}",
@@ -136,4 +143,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

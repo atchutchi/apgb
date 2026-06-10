@@ -8,6 +8,10 @@ export const metadata: Metadata = {
   },
   description:
     "Portal oficial da Administração dos Portos da Guiné-Bissau e do Porto de Bissau.",
+  icons: {
+    icon: "/icon.png",
+    apple: "/apple-icon.png",
+  },
 };
 
 export default function RootLayout({

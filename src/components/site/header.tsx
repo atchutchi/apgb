@@ -9,6 +9,8 @@ import { getUi } from "@/config/ui";
 import { getLocalizedText } from "@/lib/content";
 import { pagePath } from "@/lib/paths";
 
+import { MenuController } from "./menu-controller";
+
 export function SiteHeader({ locale }: { locale: Locale }) {
   const ui = getUi(locale);
 
@@ -19,9 +21,15 @@ export function SiteHeader({ locale }: { locale: Locale }) {
       </a>
       <div className="government-bar">
         <div className="shell government-bar__inner">
-          <span className="government-mark" aria-hidden="true">
-            GB
-          </span>
+          <Image
+            className="government-flag"
+            src="/media/flag-guinea-bissau.png"
+            alt=""
+            width={28}
+            height={14}
+            priority
+            unoptimized
+          />
           <span>{ui.government}</span>
           <nav className="utility-nav" aria-label="Navegação utilitária">
             <Link href={`/${locale}/galeria`}>
@@ -60,7 +68,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             </Link>
           </div>
         </div>
-        <nav className="primary-nav shell" aria-label="Menu principal">
+        <MenuController className="primary-nav shell" label="Menu principal">
           {primaryNavigation.map((item) =>
             item.children?.length ? (
               <details className="nav-group" key={item.slug}>
@@ -106,7 +114,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
               ))}
             </div>
           </details>
-        </nav>
+        </MenuController>
       </header>
     </>
   );

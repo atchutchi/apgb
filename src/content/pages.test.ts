@@ -22,5 +22,13 @@ describe("public page catalogue", () => {
   it("keeps all public page slugs unique", () => {
     expect(new Set(pages.map((page) => page.slug)).size).toBe(pages.length);
   });
-});
 
+  it("uses the approved images for the Director-General and institutional pages", () => {
+    expect(pages.find((page) => page.slug === "mensagem-do-director-geral")?.heroImage).toBe(
+      "/media/gallery/dsc_4003.webp",
+    );
+    expect(pages.find((page) => page.slug === "quem-somos")?.heroImage).toBe(
+      "/media/gallery/dsc_3989.webp",
+    );
+  });
+});

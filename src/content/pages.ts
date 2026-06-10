@@ -223,6 +223,16 @@ const customSummaries: Record<string, string> = {
     "Investimentos em equipamentos de movimentação destinados a aumentar a eficiência das operações portuárias.",
 };
 
+const customHeroImages: Record<string, string> = {
+  "mensagem-do-director-geral": "/media/gallery/dsc_4003.webp",
+  "quem-somos": "/media/gallery/dsc_3989.webp",
+};
+
+const customHeroAlts: Record<string, string> = {
+  "mensagem-do-director-geral": "Director-Geral da APGB no seu gabinete",
+  "quem-somos": "Edifício da Administração dos Portos da Guiné-Bissau no Porto de Bissau",
+};
+
 const customDocuments: Record<string, string[]> = {
   estatutos: [
     "/documents/estatuto-apgb-compressed-min.pdf",
@@ -306,8 +316,8 @@ export const pages: PageContent[] = primaryNavigation.flatMap((section) => {
     section: section.slug,
     title: item.label,
     summary: localized(customSummaries[item.slug] || sectionDescriptions[section.slug]),
-    heroImage: imageFor(section.slug),
-    heroAlt: localized(sectionAlt[section.slug]),
+    heroImage: customHeroImages[item.slug] || imageFor(section.slug),
+    heroAlt: localized(customHeroAlts[item.slug] || sectionAlt[section.slug]),
     blocks: blocksFor(item.label.pt, section.slug),
     documentUrls: customDocuments[item.slug],
   }));

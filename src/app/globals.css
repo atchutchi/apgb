@@ -90,15 +90,13 @@ img {
   gap: 0.6rem;
 }
 
-.government-mark {
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 17px;
-  background: #ce1126;
-  border-left: 7px solid #fcd116;
-  color: white;
-  font-size: 0.48rem;
+.government-flag {
+  width: 28px;
+  height: 14px;
+  flex: 0 0 auto;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 0 1px rgba(3, 30, 65, 0.24);
 }
 
 .utility-nav {
@@ -1189,6 +1187,28 @@ img {
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   color: #8da5c0;
   font-size: 0.62rem;
+}
+
+@media (min-width: 801px) and (max-width: 1200px) {
+  .home-hero h1 {
+    max-width: 48%;
+    font-size: clamp(3rem, 5.6vw, 4.5rem);
+    letter-spacing: -0.055em;
+  }
+
+  .home-hero__content > p,
+  .page-hero__content > div {
+    max-width: 48%;
+  }
+
+  .home-hero__content > p,
+  .page-hero__content > div > p {
+    font-size: 0.9rem;
+  }
+
+  .page-hero h1 {
+    font-size: clamp(2.8rem, 5.4vw, 4.4rem);
+  }
 }
 
 @media (max-width: 940px) {
