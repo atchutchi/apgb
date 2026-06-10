@@ -47,13 +47,15 @@ export function HomeView({ locale }: { locale: Locale }) {
   return (
     <>
       <section className="home-hero">
-        <Image
-          src={home.heroImage}
-          alt={getLocalizedText(home.heroAlt, locale)}
-          fill
-          sizes="100vw"
-          priority
-        />
+        <div className="home-hero__photo">
+          <Image
+            src={home.heroImage}
+            alt={getLocalizedText(home.heroAlt, locale)}
+            fill
+            sizes="(max-width: 800px) 100vw, 64vw"
+            priority
+          />
+        </div>
         <div className="home-hero__veil" />
         <div className="shell home-hero__content">
           <span className="status-chip">

@@ -30,13 +30,15 @@ export function ContentView({ locale, page }: { locale: Locale; page: PageConten
   return (
     <>
       <section className="page-hero">
-        <Image
-          src={page.heroImage}
-          alt={getLocalizedText(page.heroAlt, locale)}
-          fill
-          sizes="100vw"
-          priority
-        />
+        <div className="page-hero__photo">
+          <Image
+            src={page.heroImage}
+            alt={getLocalizedText(page.heroAlt, locale)}
+            fill
+            sizes="(max-width: 800px) 100vw, 64vw"
+            priority
+          />
+        </div>
         <div className="page-hero__veil" />
         <div className="shell page-hero__content">
           <nav className="breadcrumb" aria-label="Breadcrumb">

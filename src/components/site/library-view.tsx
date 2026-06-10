@@ -51,7 +51,9 @@ export function DocumentsView({ locale }: { locale: Locale }) {
 function LibraryHero({ title, summary, image }: { title: string; summary: string; image: string }) {
   return (
     <section className="library-hero">
-      <Image src={image} alt="" fill sizes="100vw" priority />
+      <div className="library-hero__photo">
+        <Image src={image} alt="" fill sizes="(max-width: 800px) 100vw, 64vw" priority />
+      </div>
       <div className="page-hero__veil" />
       <div className="shell">
         <h1>{title}</h1>

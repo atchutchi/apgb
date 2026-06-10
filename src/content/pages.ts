@@ -25,7 +25,7 @@ const localized = (pt: string, fr?: string, en?: string): LocalizedText => ({
 });
 
 const imageSets: Record<string, string[]> = {
-  home: ["/media/gallery/dsc_3983.webp"],
+  home: ["/media/gallery/dsc_3986.webp"],
   "autoridade-portuaria": [
     "/media/gallery/dsc_3934.webp",
     "/media/gallery/dsc_3937.webp",
@@ -283,7 +283,7 @@ export const pages: PageContent[] = primaryNavigation.flatMap((section) => {
         ),
         summary: localized(customSummaries[""]),
         heroImage: imageSets.home[0],
-        heroAlt: localized("Navio em actividade no Porto de Bissau"),
+        heroAlt: localized("Parque de contentores e actividade operacional no Porto de Bissau"),
         blocks: blocksFor("A Administração dos Portos da Guiné-Bissau", "porto-de-bissau"),
         featured: true,
       },
