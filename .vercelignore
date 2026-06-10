@@ -1,0 +1,17 @@
+node_modules
+.next
+.git
+.superpowers
+.impeccable
+data/runtime
+public/uploads
+
+CONTEUDOS
+SITES
+logo
+DSC_*.JPG
+/*.docx
+/*.pdf
+/*.pptx
+/*.jpg
+/*.png
