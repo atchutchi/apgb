@@ -1,9 +1,13 @@
-# Dependencies and builds
-node_modules/
-.next/
-out/
-coverage/
+# Dependencies, tests and builds
+/node_modules
+/.next/
+/out/
+/build/
+/coverage/
+*.tsbuildinfo
+next-env.d.ts
 *.log
+*.pem
 
 # Local configuration
 .env
@@ -33,4 +37,3 @@ coverage/
 # Runtime content and uploads for cPanel/local mode
 /data/runtime/
 /public/uploads/
-
