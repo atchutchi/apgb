@@ -77,12 +77,12 @@ const imageSets: Record<string, string[]> = {
     "/media/gallery/dsc_3995.webp",
   ],
   projectos: [
-    "/media/gallery/dsc_4001.webp",
-    "/media/gallery/dsc_4002.webp",
-    "/media/gallery/dsc_4003.webp",
-    "/media/gallery/dsc_4004.webp",
-    "/media/gallery/dsc_4005.webp",
-    "/media/gallery/dsc_4006.webp",
+    "/media/gallery/dsc_3974.webp",
+    "/media/gallery/dsc_3977.webp",
+    "/media/gallery/dsc_3978.webp",
+    "/media/gallery/dsc_3979.webp",
+    "/media/gallery/dsc_3980.webp",
+    "/media/gallery/dsc_3981.webp",
   ],
 };
 
