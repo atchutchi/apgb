@@ -14,6 +14,35 @@ SUPPORT = ROOT / "public" / "media" / "support"
 DOCUMENTS = ROOT / "public" / "documents"
 MANIFEST = ROOT / "src" / "content" / "media-manifest.json"
 
+EXCLUDED_GALLERY_NUMBERS = {
+    3934,
+    3937,
+    3938,
+    3941,
+    3949,
+    3956,
+    3960,
+    3961,
+    3962,
+    3963,
+    3964,
+}
+
+MANUAL_GALLERY = [
+    {
+        "source": "apgb1.jpeg",
+        "filename": "apgb1.webp",
+        "category": "pessoas",
+        "alt": "Responsáveis da APGB durante uma comunicação institucional junto ao cais",
+    },
+    {
+        "source": "apgb2.jpeg",
+        "filename": "apgb2.webp",
+        "category": "pessoas",
+        "alt": "Responsáveis da APGB durante uma visita a uma embarcação no Porto de Bissau",
+    },
+]
+
 
 def slug(value: str) -> str:
     normalized = unicodedata.normalize("NFKD", value)
@@ -77,6 +106,8 @@ def main() -> None:
     gallery = []
     for source in sorted(ROOT.glob("DSC_*.JPG")):
         number = int(source.stem.split("_")[1])
+        if number in EXCLUDED_GALLERY_NUMBERS:
+            continue
         category = category_for(number)
         destination = GALLERY / f"{source.stem.lower()}.webp"
         convert_image(source, destination)
@@ -88,6 +119,18 @@ def main() -> None:
                 "alt": alt_for(number, category),
             }
         )
+
+    for item in MANUAL_GALLERY:
+        destination = GALLERY / item["filename"]
+        if destination.exists():
+            gallery.append(
+                {
+                    "source": item["source"],
+                    "url": f"/media/gallery/{destination.name}",
+                    "category": item["category"],
+                    "alt": item["alt"],
+                }
+            )
 
     support_sources = [
         ROOT / "organigrama 3.png",

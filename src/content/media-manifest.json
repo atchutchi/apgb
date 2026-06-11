@@ -1,30 +1,6 @@
 {
   "gallery": [
     {
-      "source": "DSC_3934.JPG",
-      "url": "/media/gallery/dsc_3934.webp",
-      "category": "pessoas",
-      "alt": "Colaboradores e responsáveis da APGB no Porto de Bissau, fotografia 3934"
-    },
-    {
-      "source": "DSC_3937.JPG",
-      "url": "/media/gallery/dsc_3937.webp",
-      "category": "pessoas",
-      "alt": "Colaboradores e responsáveis da APGB no Porto de Bissau, fotografia 3937"
-    },
-    {
-      "source": "DSC_3938.JPG",
-      "url": "/media/gallery/dsc_3938.webp",
-      "category": "pessoas",
-      "alt": "Colaboradores e responsáveis da APGB no Porto de Bissau, fotografia 3938"
-    },
-    {
-      "source": "DSC_3941.JPG",
-      "url": "/media/gallery/dsc_3941.webp",
-      "category": "pessoas",
-      "alt": "Colaboradores e responsáveis da APGB no Porto de Bissau, fotografia 3941"
-    },
-    {
       "source": "DSC_3942.JPG",
       "url": "/media/gallery/dsc_3942.webp",
       "category": "pessoas",
@@ -61,52 +37,10 @@
       "alt": "Colaboradores e responsáveis da APGB no Porto de Bissau, fotografia 3948"
     },
     {
-      "source": "DSC_3949.JPG",
-      "url": "/media/gallery/dsc_3949.webp",
-      "category": "pessoas",
-      "alt": "Colaboradores e responsáveis da APGB no Porto de Bissau, fotografia 3949"
-    },
-    {
       "source": "DSC_3950.JPG",
       "url": "/media/gallery/dsc_3950.webp",
       "category": "pessoas",
       "alt": "Colaboradores e responsáveis da APGB no Porto de Bissau, fotografia 3950"
-    },
-    {
-      "source": "DSC_3956.JPG",
-      "url": "/media/gallery/dsc_3956.webp",
-      "category": "pessoas",
-      "alt": "Colaboradores e responsáveis da APGB no Porto de Bissau, fotografia 3956"
-    },
-    {
-      "source": "DSC_3960.JPG",
-      "url": "/media/gallery/dsc_3960.webp",
-      "category": "pessoas",
-      "alt": "Colaboradores e responsáveis da APGB no Porto de Bissau, fotografia 3960"
-    },
-    {
-      "source": "DSC_3961.JPG",
-      "url": "/media/gallery/dsc_3961.webp",
-      "category": "pessoas",
-      "alt": "Colaboradores e responsáveis da APGB no Porto de Bissau, fotografia 3961"
-    },
-    {
-      "source": "DSC_3962.JPG",
-      "url": "/media/gallery/dsc_3962.webp",
-      "category": "pessoas",
-      "alt": "Colaboradores e responsáveis da APGB no Porto de Bissau, fotografia 3962"
-    },
-    {
-      "source": "DSC_3963.JPG",
-      "url": "/media/gallery/dsc_3963.webp",
-      "category": "pessoas",
-      "alt": "Colaboradores e responsáveis da APGB no Porto de Bissau, fotografia 3963"
-    },
-    {
-      "source": "DSC_3964.JPG",
-      "url": "/media/gallery/dsc_3964.webp",
-      "category": "pessoas",
-      "alt": "Colaboradores e responsáveis da APGB no Porto de Bissau, fotografia 3964"
     },
     {
       "source": "DSC_3965.JPG",
@@ -359,6 +293,18 @@
       "url": "/media/gallery/dsc_4013.webp",
       "category": "pessoas",
       "alt": "Colaboradores e responsáveis da APGB no Porto de Bissau, fotografia 4013"
+    },
+    {
+      "source": "apgb1.jpeg",
+      "url": "/media/gallery/apgb1.webp",
+      "category": "pessoas",
+      "alt": "Responsáveis da APGB durante uma comunicação institucional junto ao cais"
+    },
+    {
+      "source": "apgb2.jpeg",
+      "url": "/media/gallery/apgb2.webp",
+      "category": "pessoas",
+      "alt": "Responsáveis da APGB durante uma visita a uma embarcação no Porto de Bissau"
     }
   ],
   "support": [

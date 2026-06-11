@@ -337,6 +337,10 @@ img {
   object-fit: cover;
 }
 
+.page-hero__photo--top img {
+  object-position: center top;
+}
+
 .home-hero__photo,
 .page-hero__photo,
 .library-hero__photo {

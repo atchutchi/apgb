@@ -27,18 +27,10 @@ const localized = (pt: string, fr?: string, en?: string): LocalizedText => ({
 const imageSets: Record<string, string[]> = {
   home: ["/media/gallery/dsc_3986.webp"],
   "autoridade-portuaria": [
-    "/media/gallery/dsc_3934.webp",
-    "/media/gallery/dsc_3937.webp",
-    "/media/gallery/dsc_3941.webp",
     "/media/gallery/dsc_3945.webp",
     "/media/gallery/dsc_3948.webp",
     "/media/gallery/dsc_3950.webp",
-    "/media/gallery/dsc_3956.webp",
-    "/media/gallery/dsc_3960.webp",
-    "/media/gallery/dsc_3961.webp",
-    "/media/gallery/dsc_3962.webp",
-    "/media/gallery/dsc_3963.webp",
-    "/media/gallery/dsc_3964.webp",
+    "/media/gallery/apgb1.webp",
     "/media/gallery/dsc_3988.webp",
     "/media/gallery/dsc_3989.webp",
     "/media/gallery/dsc_3990.webp",
@@ -226,11 +218,16 @@ const customSummaries: Record<string, string> = {
 const customHeroImages: Record<string, string> = {
   "mensagem-do-director-geral": "/media/gallery/dsc_4003.webp",
   "quem-somos": "/media/gallery/dsc_3989.webp",
+  comunicacao: "/media/gallery/apgb1.webp",
+  "comunidade-portuaria": "/media/gallery/apgb2.webp",
 };
 
 const customHeroAlts: Record<string, string> = {
   "mensagem-do-director-geral": "Director-Geral da APGB no seu gabinete",
   "quem-somos": "Edifício da Administração dos Portos da Guiné-Bissau no Porto de Bissau",
+  comunicacao: "Responsáveis da APGB durante uma comunicação institucional junto ao cais",
+  "comunidade-portuaria":
+    "Responsáveis da APGB durante uma visita a uma embarcação no Porto de Bissau",
 };
 
 const customDocuments: Record<string, string[]> = {

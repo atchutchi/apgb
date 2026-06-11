@@ -1,11 +1,17 @@
+import { readdirSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import media from "./media-manifest.json";
 
 describe("APGB media manifest", () => {
-  it("includes every unique high-resolution APGB photograph", () => {
-    expect(media.gallery).toHaveLength(60);
-    expect(new Set(media.gallery.map((item) => item.source)).size).toBe(60);
+  it("matches every photograph currently published in the gallery directory", () => {
+    const galleryUrls = readdirSync(join(process.cwd(), "public/media/gallery"))
+      .filter((filename) => filename.endsWith(".webp"))
+      .map((filename) => `/media/gallery/${filename}`);
+
+    expect(new Set(media.gallery.map((item) => item.url))).toEqual(new Set(galleryUrls));
+    expect(new Set(media.gallery.map((item) => item.source)).size).toBe(media.gallery.length);
   });
 
   it("assigns accessible descriptions and categories to every photograph", () => {

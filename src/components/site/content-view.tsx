@@ -30,7 +30,13 @@ export function ContentView({ locale, page }: { locale: Locale; page: PageConten
   return (
     <>
       <section className="page-hero">
-        <div className="page-hero__photo">
+        <div
+          className={
+            page.slug === "comunidade-portuaria"
+              ? "page-hero__photo page-hero__photo--top"
+              : "page-hero__photo"
+          }
+        >
           <Image
             src={page.heroImage}
             alt={getLocalizedText(page.heroAlt, locale)}

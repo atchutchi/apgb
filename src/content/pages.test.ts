@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { primaryNavigation } from "@/config/navigation";
@@ -15,6 +17,10 @@ describe("public page catalogue", () => {
       const page = pages.find((item) => item.slug === slug);
       expect(page, `Missing page for ${slug || "home"}`).toBeDefined();
       expect(page?.heroImage).toMatch(/^\/media\//);
+      expect(
+        existsSync(join(process.cwd(), "public", page!.heroImage.replace(/^\//, ""))),
+        `Missing hero image for ${slug || "home"}: ${page?.heroImage}`,
+      ).toBe(true);
       expect(page?.summary.pt.length).toBeGreaterThan(30);
     }
   });
@@ -29,6 +35,12 @@ describe("public page catalogue", () => {
     );
     expect(pages.find((page) => page.slug === "quem-somos")?.heroImage).toBe(
       "/media/gallery/dsc_3989.webp",
+    );
+    expect(pages.find((page) => page.slug === "comunicacao")?.heroImage).toBe(
+      "/media/gallery/apgb1.webp",
+    );
+    expect(pages.find((page) => page.slug === "comunidade-portuaria")?.heroImage).toBe(
+      "/media/gallery/apgb2.webp",
     );
   });
 });
