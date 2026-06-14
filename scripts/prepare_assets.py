@@ -11,8 +11,12 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 GALLERY = ROOT / "public" / "media" / "gallery"
 SUPPORT = ROOT / "public" / "media" / "support"
+SECTION_HEROES = ROOT / "public" / "media" / "section-heroes"
 DOCUMENTS = ROOT / "public" / "documents"
 MANIFEST = ROOT / "src" / "content" / "media-manifest.json"
+DREDGING_SOURCE = Path(
+    "/Volumes/NO NAME/FOTOS DE DRAGAGEM DO PORTO DA APGB PARA MINISTRO DOS TRANSPORTES E TELECOMUNICAÇÕES"
+)
 
 EXCLUDED_GALLERY_NUMBERS = {
     3934,
@@ -42,6 +46,41 @@ MANUAL_GALLERY = [
         "alt": "Responsáveis da APGB durante uma visita a uma embarcação no Porto de Bissau",
     },
 ]
+
+DREDGING_GALLERY_NUMBERS = [
+    9207,
+    9345,
+    9638,
+    9580,
+    9579,
+    9565,
+    9392,
+    9388,
+    9507,
+    9496,
+    9461,
+    9426,
+    9418,
+    9417,
+    9408,
+    9347,
+    9393,
+    9384,
+    9552,
+    9544,
+    9209,
+    9626,
+    9597,
+    9245,
+]
+
+SECTION_HERO_SOURCES = {
+    "autoridade-portuaria": ROOT / "DSC_3989.JPG",
+    "porto-de-bissau": ROOT / "DSC_3978.JPG",
+    "negocio-portuario": ROOT / "DSC_4000.JPG",
+    "area-social": DREDGING_SOURCE / "IMG_9418.JPG",
+    "projectos": DREDGING_SOURCE / "IMG_9345.JPG",
+}
 
 
 def slug(value: str) -> str:
@@ -79,6 +118,44 @@ def alt_for(number: int, category: str) -> str:
     return descriptions[category]
 
 
+def dredging_category(number: int) -> str:
+    if number in {9345, 9638, 9347}:
+        return "navios"
+    if number in {9426, 9418, 9417, 9408, 9597, 9626}:
+        return "pessoas"
+    return "operacoes"
+
+
+def dredging_alt(number: int) -> str:
+    descriptions = {
+        9207: "Faixa institucional do início dos trabalhos de dragagem do Porto de Bissau",
+        9345: "Equipamento de dragagem e rebocador no Porto de Bissau",
+        9638: "Grua flutuante preparada para os trabalhos de dragagem",
+        9580: "Responsáveis durante a visita ao equipamento de dragagem",
+        9579: "Delegação institucional junto ao equipamento de dragagem",
+        9565: "Apresentação técnica do equipamento de dragagem à delegação",
+        9392: "Delegação oficial durante a cerimónia de início da dragagem",
+        9388: "Responsáveis percorrem o cais durante o início dos trabalhos de dragagem",
+        9507: "Intervenção oficial na cerimónia de início da dragagem",
+        9496: "Discurso durante a cerimónia de início dos trabalhos de dragagem",
+        9461: "Intervenção pública junto a um navio no Porto de Bissau",
+        9426: "Actuação cultural na cerimónia de início da dragagem",
+        9418: "Dança tradicional durante a cerimónia no Porto de Bissau",
+        9417: "Grupo cultural em actuação no Porto de Bissau",
+        9408: "Grupo de dança tradicional durante a cerimónia de dragagem",
+        9347: "Rebocador e equipamento flutuante no Porto de Bissau",
+        9393: "Delegação oficial junto a um navio no cais",
+        9384: "Cumprimento institucional durante a cerimónia de dragagem",
+        9552: "Brinde institucional na cerimónia de início da dragagem",
+        9544: "Diálogo entre responsáveis e trabalhadores portuários",
+        9209: "Responsáveis de segurança durante a cerimónia no Porto de Bissau",
+        9626: "Inspectores da APGB junto ao equipamento de dragagem",
+        9597: "Responsáveis da APGB no Porto de Bissau",
+        9245: "Delegação institucional percorre o cais do Porto de Bissau",
+    }
+    return descriptions[number]
+
+
 def convert_image(source: Path, destination: Path, max_width: int = 1800) -> None:
     destination.parent.mkdir(parents=True, exist_ok=True)
     with Image.open(source) as image:
@@ -100,7 +177,7 @@ def copy_document(source: Path) -> dict[str, str]:
 
 
 def main() -> None:
-    for directory in (GALLERY, SUPPORT, DOCUMENTS):
+    for directory in (GALLERY, SUPPORT, SECTION_HEROES, DOCUMENTS):
         directory.mkdir(parents=True, exist_ok=True)
 
     gallery = []
@@ -131,6 +208,26 @@ def main() -> None:
                     "alt": item["alt"],
                 }
             )
+
+    for number in DREDGING_GALLERY_NUMBERS:
+        source = DREDGING_SOURCE / f"IMG_{number}.JPG"
+        destination = GALLERY / f"dragagem-img-{number}.webp"
+        if source.exists():
+            convert_image(source, destination)
+        if destination.exists():
+            gallery.append(
+                {
+                    "source": f"dragagem/IMG_{number}.JPG",
+                    "url": f"/media/gallery/{destination.name}",
+                    "category": dredging_category(number),
+                    "alt": dredging_alt(number),
+                }
+            )
+
+    for name, source in SECTION_HERO_SOURCES.items():
+        destination = SECTION_HEROES / f"{name}.webp"
+        if source.exists():
+            convert_image(source, destination, max_width=2200)
 
     support_sources = [
         ROOT / "organigrama 3.png",

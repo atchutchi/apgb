@@ -43,4 +43,11 @@ describe("public page catalogue", () => {
       "/media/gallery/apgb2.webp",
     );
   });
+
+  it("publishes the dredging project and the recent dredging news", () => {
+    expect(pages.find((page) => page.slug === "dragagem")?.galleryUrls?.length).toBeGreaterThan(20);
+    expect(
+      pages.find((page) => page.slug === "inicio-trabalhos-dragagem-porto-bissau")?.publishedAt?.pt,
+    ).toBe("21 de Janeiro de 2026");
+  });
 });

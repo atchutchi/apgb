@@ -15,6 +15,8 @@ export type PageContent = {
   heroAlt: LocalizedText;
   blocks: ContentBlock[];
   documentUrls?: string[];
+  galleryUrls?: string[];
+  publishedAt?: LocalizedText;
   featured?: boolean;
 };
 
@@ -25,7 +27,7 @@ const localized = (pt: string, fr?: string, en?: string): LocalizedText => ({
 });
 
 const imageSets: Record<string, string[]> = {
-  home: ["/media/gallery/dsc_3986.webp"],
+  home: ["/media/gallery/apgb-hero.png"],
   "autoridade-portuaria": [
     "/media/gallery/dsc_3945.webp",
     "/media/gallery/dsc_3948.webp",
@@ -105,6 +107,8 @@ const customSummaries: Record<string, string> = {
     "Acompanhe a actividade institucional, operacional e financeira da APGB através dos relatórios anuais publicados.",
   "area-de-jurisdicao":
     "Conheça o âmbito territorial e marítimo sob jurisdição da Administração dos Portos da Guiné-Bissau.",
+  estatistica:
+    "Consulte indicadores institucionais e operacionais que apoiam a transparência, o planeamento e a gestão da APGB.",
   estrategia:
     "A estratégia da APGB orienta a modernização das infra-estruturas, a melhoria da operação e o reforço da segurança portuária.",
   "missao-visao-valores":
@@ -203,6 +207,14 @@ const customSummaries: Record<string, string> = {
     "A cantina de estiva presta apoio alimentar aos trabalhadores ligados à actividade operacional.",
   "higiene-seguranca":
     "A APGB promove práticas de higiene, prevenção e segurança para proteger quem trabalha no porto.",
+  desporto:
+    "O desporto reforça a convivência, a saúde e o espírito de equipa entre os trabalhadores da comunidade portuária.",
+  "associacao-mulheres-portuarias":
+    "A Associação de Mulheres Portuárias promove a participação, a valorização profissional e a defesa dos interesses das mulheres do porto.",
+  "velhas-guardas":
+    "As Velhas Guardas preservam a memória institucional e reconhecem o contributo dos antigos trabalhadores para a história do porto.",
+  sindicato:
+    "O Sindicato representa os trabalhadores e contribui para o diálogo social e a melhoria das condições de trabalho.",
   "reabilitacao-modernizacao":
     "Projecto orientado para recuperar equipamentos existentes e melhorar a capacidade operacional do Porto de Bissau.",
   "acessibilidade-maritima":
@@ -213,13 +225,19 @@ const customSummaries: Record<string, string> = {
     "Projectos de aquisição, recuperação e adequação de embarcações de apoio à actividade portuária.",
   "equipamento-horizontal-vertical":
     "Investimentos em equipamentos de movimentação destinados a aumentar a eficiência das operações portuárias.",
+  dragagem:
+    "Projecto de melhoria da acessibilidade marítima através da dragagem do Porto de Bissau e do seu canal de acesso.",
+  "inicio-trabalhos-dragagem-porto-bissau":
+    "A APGB assinalou o início dos trabalhos de dragagem do Porto de Bissau no dia 21 de Janeiro de 2026, sob o lema «Modernizar para Servir Melhor».",
 };
 
 const customHeroImages: Record<string, string> = {
+  "inicio-trabalhos-dragagem-porto-bissau": "/media/gallery/dragagem-img-9207.webp",
   "mensagem-do-director-geral": "/media/gallery/dsc_4003.webp",
   "quem-somos": "/media/gallery/dsc_3989.webp",
   comunicacao: "/media/gallery/apgb1.webp",
   "comunidade-portuaria": "/media/gallery/apgb2.webp",
+  dragagem: "/media/gallery/dragagem-img-9345.webp",
 };
 
 const customHeroAlts: Record<string, string> = {
@@ -228,6 +246,98 @@ const customHeroAlts: Record<string, string> = {
   comunicacao: "Responsáveis da APGB durante uma comunicação institucional junto ao cais",
   "comunidade-portuaria":
     "Responsáveis da APGB durante uma visita a uma embarcação no Porto de Bissau",
+  dragagem: "Equipamento de dragagem no Porto de Bissau",
+  "inicio-trabalhos-dragagem-porto-bissau":
+    "Faixa institucional do início dos trabalhos de dragagem do Porto de Bissau",
+};
+
+const dredgingGallery = [
+  "/media/gallery/dragagem-img-9207.webp",
+  "/media/gallery/dragagem-img-9345.webp",
+  "/media/gallery/dragagem-img-9638.webp",
+  "/media/gallery/dragagem-img-9580.webp",
+  "/media/gallery/dragagem-img-9579.webp",
+  "/media/gallery/dragagem-img-9565.webp",
+  "/media/gallery/dragagem-img-9392.webp",
+  "/media/gallery/dragagem-img-9388.webp",
+  "/media/gallery/dragagem-img-9507.webp",
+  "/media/gallery/dragagem-img-9496.webp",
+  "/media/gallery/dragagem-img-9461.webp",
+  "/media/gallery/dragagem-img-9426.webp",
+  "/media/gallery/dragagem-img-9418.webp",
+  "/media/gallery/dragagem-img-9417.webp",
+  "/media/gallery/dragagem-img-9408.webp",
+  "/media/gallery/dragagem-img-9347.webp",
+  "/media/gallery/dragagem-img-9393.webp",
+  "/media/gallery/dragagem-img-9384.webp",
+  "/media/gallery/dragagem-img-9552.webp",
+  "/media/gallery/dragagem-img-9544.webp",
+  "/media/gallery/dragagem-img-9209.webp",
+  "/media/gallery/dragagem-img-9626.webp",
+  "/media/gallery/dragagem-img-9597.webp",
+  "/media/gallery/dragagem-img-9245.webp",
+];
+
+const customGalleries: Record<string, string[]> = {
+  dragagem: dredgingGallery,
+  "inicio-trabalhos-dragagem-porto-bissau": dredgingGallery.slice(0, 12),
+};
+
+const customBlocks: Record<string, ContentBlock[]> = {
+  "mensagem-do-director-geral": [
+    {
+      title: localized("Mensagem do Director-Geral"),
+      text: localized(
+        "A Administração dos Portos da Guiné-Bissau assume o compromisso de modernizar o Porto de Bissau, melhorar a qualidade dos serviços e servir o desenvolvimento económico do país. A nossa prioridade é construir uma operação portuária mais segura, eficiente, transparente e próxima dos trabalhadores, operadores e cidadãos.",
+      ),
+    },
+    {
+      title: localized("Compromisso institucional"),
+      text: localized(
+        "Continuaremos a trabalhar com o Governo, a comunidade portuária e os parceiros nacionais e internacionais para reforçar as infra-estruturas, valorizar os recursos humanos e preparar o porto para os desafios do comércio marítimo. Mensagem institucional da Direcção-Geral. © Administração dos Portos da Guiné-Bissau.",
+      ),
+    },
+  ],
+  dragagem: [
+    {
+      title: localized("Enquadramento"),
+      text: localized(
+        "A dragagem do Porto de Bissau integra o esforço de modernização da principal porta marítima do país. A intervenção melhora as condições de acesso, manobra e segurança para os navios que servem a economia nacional.",
+      ),
+    },
+    {
+      title: localized("Objectivos do projecto"),
+      text: localized(
+        "Os trabalhos destinam-se a recuperar profundidades operacionais, melhorar a acessibilidade marítima e criar condições para uma operação portuária mais regular e eficiente.",
+      ),
+    },
+    {
+      title: localized("Modernizar para Servir Melhor"),
+      text: localized(
+        "O início oficial dos trabalhos foi assinalado no Porto de Bissau em 21 de Janeiro de 2026, com a participação de responsáveis governamentais, dirigentes da APGB, trabalhadores e parceiros do sector.",
+      ),
+    },
+  ],
+  "inicio-trabalhos-dragagem-porto-bissau": [
+    {
+      title: localized("21 de Janeiro de 2026"),
+      text: localized(
+        "A Administração dos Portos da Guiné-Bissau assinalou o início dos trabalhos de dragagem do Porto de Bissau, uma intervenção central para melhorar a acessibilidade marítima e reforçar a capacidade operacional do porto.",
+      ),
+    },
+    {
+      title: localized("Modernizar para Servir Melhor"),
+      text: localized(
+        "A cerimónia reuniu representantes do Governo, dirigentes e trabalhadores da APGB, parceiros técnicos e membros da comunidade portuária. O projecto reforça o compromisso com um porto mais seguro, eficiente e preparado para responder às necessidades do país.",
+      ),
+    },
+    {
+      title: localized("Uma intervenção estratégica"),
+      text: localized(
+        "A dragagem contribui para melhorar as condições de navegação e manobra, apoiar a regularidade das escalas e criar uma base mais sólida para o crescimento das operações marítimas e comerciais.",
+      ),
+    },
+  ],
 };
 
 const customDocuments: Record<string, string[]> = {
@@ -250,13 +360,19 @@ const sectionAlt: Record<string, string> = {
   projectos: "Equipa da APGB envolvida na modernização do Porto de Bissau",
 };
 
+const sectionHeroImages: Record<string, string> = {
+  "autoridade-portuaria": "/media/section-heroes/autoridade-portuaria.webp",
+  "porto-de-bissau": "/media/section-heroes/porto-de-bissau.webp",
+  "negocio-portuario": "/media/section-heroes/negocio-portuario.webp",
+  "area-social": "/media/section-heroes/area-social.webp",
+  projectos: "/media/section-heroes/projectos.webp",
+};
+
 const sectionCounters: Record<string, number> = {};
 
 function imageFor(section: string): string {
-  const set = imageSets[section] || imageSets["porto-de-bissau"];
-  const index = sectionCounters[section] || 0;
-  sectionCounters[section] = index + 1;
-  return set[index % set.length];
+  sectionCounters[section] = (sectionCounters[section] || 0) + 1;
+  return sectionHeroImages[section] || sectionHeroImages["porto-de-bissau"];
 }
 
 function blocksFor(title: string, section: string): ContentBlock[] {
@@ -290,7 +406,7 @@ export const pages: PageContent[] = primaryNavigation.flatMap((section) => {
         ),
         summary: localized(customSummaries[""]),
         heroImage: imageSets.home[0],
-        heroAlt: localized("Parque de contentores e actividade operacional no Porto de Bissau"),
+        heroAlt: localized("Edifício da Administração dos Portos da Guiné-Bissau"),
         blocks: blocksFor("A Administração dos Portos da Guiné-Bissau", "porto-de-bissau"),
         featured: true,
       },
@@ -317,10 +433,30 @@ export const pages: PageContent[] = primaryNavigation.flatMap((section) => {
     heroAlt: localized(customHeroAlts[item.slug] || sectionAlt[section.slug]),
     blocks: blocksFor(item.label.pt, section.slug),
     documentUrls: customDocuments[item.slug],
+    galleryUrls: customGalleries[item.slug],
   }));
 
   return [sectionPage, ...children];
 });
+
+pages.push({
+  slug: "inicio-trabalhos-dragagem-porto-bissau",
+  section: "autoridade-portuaria",
+  title: localized("Início dos Trabalhos de Dragagem do Porto de Bissau"),
+  summary: localized(customSummaries["inicio-trabalhos-dragagem-porto-bissau"]),
+  heroImage: customHeroImages["inicio-trabalhos-dragagem-porto-bissau"],
+  heroAlt: localized(customHeroAlts["inicio-trabalhos-dragagem-porto-bissau"]),
+  blocks: customBlocks["inicio-trabalhos-dragagem-porto-bissau"],
+  galleryUrls: customGalleries["inicio-trabalhos-dragagem-porto-bissau"],
+  publishedAt: localized("21 de Janeiro de 2026", "21 janvier 2026", "21 January 2026"),
+  featured: true,
+});
+
+for (const page of pages) {
+  if (customBlocks[page.slug]) {
+    page.blocks = customBlocks[page.slug];
+  }
+}
 
 export function getPageBySlug(slug: string): PageContent | undefined {
   return pages.find((page) => page.slug === slug);

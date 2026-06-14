@@ -46,7 +46,6 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           <Link className="brand" href={`/${locale}`} aria-label={`${ui.authority}, ${ui.home}`}>
             <Image src="/media/logo-apgb.png" alt="" width={116} height={44} priority unoptimized />
             <span>
-              <strong>APGB</strong>
               <small>{ui.authority}</small>
             </span>
           </Link>

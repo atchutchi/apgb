@@ -22,6 +22,7 @@ next-env.d.ts
 # macOS metadata
 ._*
 .DS_Store
+._*
 
 # Original source material kept outside Git
 /CONTEUDOS/

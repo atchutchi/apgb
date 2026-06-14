@@ -1,4 +1,4 @@
-import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowUpRight, Mail, MapPin, Music2, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -16,8 +16,20 @@ export function SiteFooter({ locale }: { locale: Locale }) {
       <div className="shell footer-grid">
         <div className="footer-brand">
           <Image src="/media/logo-apgb.png" alt="" width={132} height={50} unoptimized />
-          <strong>APGB</strong>
           <p>{ui.footerText}</p>
+          <div className="footer-social" aria-label="Redes sociais">
+            <a
+              href="https://www.facebook.com/@Administra%C3%A7%C3%A3o-dos-Portos-da-Guin%C3%A9-Bissau-APGB-100044120232814/?locale=sw_KE"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Facebook da APGB"
+            >
+              <span className="facebook-mark" aria-hidden="true">f</span>
+            </a>
+            <span aria-label="TikTok da APGB">
+              <Music2 size={19} aria-hidden="true" />
+            </span>
+          </div>
         </div>
         <div>
           <h2>{ui.quickLinks}</h2>

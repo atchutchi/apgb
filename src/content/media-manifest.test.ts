@@ -7,7 +7,7 @@ import media from "./media-manifest.json";
 describe("APGB media manifest", () => {
   it("matches every photograph currently published in the gallery directory", () => {
     const galleryUrls = readdirSync(join(process.cwd(), "public/media/gallery"))
-      .filter((filename) => filename.endsWith(".webp"))
+      .filter((filename) => filename.endsWith(".webp") && !filename.startsWith("._"))
       .map((filename) => `/media/gallery/${filename}`);
 
     expect(new Set(media.gallery.map((item) => item.url))).toEqual(new Set(galleryUrls));

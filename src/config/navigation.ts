@@ -32,6 +32,7 @@ export const primaryNavigation: NavigationItem[] = [
       { slug: "organigrama", label: text("Organigrama", "Organigramme", "Organisation chart") },
       { slug: "relatorio-anual", label: text("Relatório anual") },
       { slug: "area-de-jurisdicao", label: text("Área de jurisdição") },
+      { slug: "estatistica", label: text("Estatística", "Statistique", "Statistics") },
       {
         slug: "estrategia",
         label: text("Estratégia", "Stratégie", "Strategy"),
@@ -131,6 +132,17 @@ export const primaryNavigation: NavigationItem[] = [
       { slug: "posto-medico", label: text("Posto médico") },
       { slug: "cantina-estiva", label: text("Cantina de estiva") },
       { slug: "higiene-seguranca", label: text("Higiene e segurança no trabalho") },
+      { slug: "desporto", label: text("Desporto", "Sport", "Sport") },
+      {
+        slug: "associacao-mulheres-portuarias",
+        label: text(
+          "Associação de Mulheres Portuárias",
+          "Association des Femmes Portuaires",
+          "Port Women Association",
+        ),
+      },
+      { slug: "velhas-guardas", label: text("Velhas Guardas", "Anciens Travailleurs", "Veterans") },
+      { slug: "sindicato", label: text("Sindicato", "Syndicat", "Trade Union") },
     ],
   },
   {
@@ -142,7 +154,7 @@ export const primaryNavigation: NavigationItem[] = [
       { slug: "ajuda-navegacao", label: text("Ajuda à navegação") },
       { slug: "embarcacoes", label: text("Embarcações") },
       { slug: "equipamento-horizontal-vertical", label: text("Equipamento horizontal e vertical") },
+      { slug: "dragagem", label: text("Dragagem", "Dragage", "Dredging") },
     ],
   },
 ];
-

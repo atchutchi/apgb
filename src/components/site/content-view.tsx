@@ -55,7 +55,7 @@ export function ContentView({ locale, page }: { locale: Locale; page: PageConten
           <div>
             <span className="status-chip">
               <span aria-hidden="true" />
-              {ui.currentInfo}
+              {page.publishedAt ? getLocalizedText(page.publishedAt, locale) : ui.currentInfo}
             </span>
             <h1>{getLocalizedText(page.title, locale)}</h1>
             <p>{getLocalizedText(page.summary, locale)}</p>
@@ -116,6 +116,27 @@ export function ContentView({ locale, page }: { locale: Locale; page: PageConten
               </div>
             </section>
           )}
+          {!!page.galleryUrls?.length && (
+            <section className="article-photo-story">
+              <span className="article-index">{String(page.blocks.length + 1).padStart(2, "0")}</span>
+              <h2>{ui.photoArchive}</h2>
+              <div className="article-photo-story__grid">
+                {page.galleryUrls.map((url, index) => {
+                  const photo = media.gallery.find((item) => item.url === url);
+                  return (
+                    <figure key={url} className={index === 0 ? "is-featured" : undefined}>
+                      <Image
+                        src={url}
+                        alt={photo?.alt || getLocalizedText(page.heroAlt, locale)}
+                        fill
+                        sizes="(max-width: 800px) 100vw, 40vw"
+                      />
+                    </figure>
+                  );
+                })}
+              </div>
+            </section>
+          )}
         </article>
         <aside className="article-aside">
           <span>{ui.related}</span>
@@ -142,7 +163,10 @@ export function ContentView({ locale, page }: { locale: Locale; page: PageConten
           </Link>
         </div>
         <div className="context-gallery__grid">
-          {media.gallery.slice(photoStart, photoStart + 3).map((photo) => (
+          {(page.galleryUrls?.length
+            ? page.galleryUrls.slice(0, 3).map((url) => media.gallery.find((photo) => photo.url === url)!)
+            : media.gallery.slice(photoStart, photoStart + 3)
+          ).map((photo) => (
             <figure key={photo.url}>
               <Image src={photo.url} alt={photo.alt} fill sizes="33vw" />
             </figure>

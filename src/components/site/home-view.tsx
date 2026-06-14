@@ -37,9 +37,10 @@ export function HomeView({ locale }: { locale: Locale }) {
   const ui = getUi(locale);
   const home = getPageBySlug("")!;
   const institutional = getPageBySlug("quem-somos")!;
+  const directorGeneral = getPageBySlug("mensagem-do-director-geral")!;
   const projects = projectSlugs.map((slug) => getPageBySlug(slug)!);
   const highlights = [
-    getPageBySlug("noticias")!,
+    getPageBySlug("inicio-trabalhos-dragagem-porto-bissau")!,
     getPageBySlug("investimentos")!,
     getPageBySlug("tarifario")!,
   ];
@@ -142,6 +143,32 @@ export function HomeView({ locale }: { locale: Locale }) {
               <span>{getLocalizedText(getPageBySlug("missao-visao-valores")!.summary, locale)}</span>
             </blockquote>
             <Link className="text-link" href={pagePath(locale, "quem-somos")}>
+              {ui.readMore}
+              <ArrowRight size={17} aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="section director-message">
+        <div className="shell director-message__grid">
+          <div className="director-message__photo">
+            <Image
+              src={directorGeneral.heroImage}
+              alt={getLocalizedText(directorGeneral.heroAlt, locale)}
+              fill
+              sizes="(max-width: 900px) 100vw, 44vw"
+            />
+          </div>
+          <div className="director-message__copy">
+            <span>{getLocalizedText(directorGeneral.title, locale)}</span>
+            <blockquote>
+              “A nossa prioridade é construir uma operação portuária mais segura, eficiente,
+              transparente e ao serviço do desenvolvimento da Guiné-Bissau.”
+            </blockquote>
+            <p>{getLocalizedText(directorGeneral.summary, locale)}</p>
+            <small>© Administração dos Portos da Guiné-Bissau</small>
+            <Link className="text-link" href={pagePath(locale, directorGeneral.slug)}>
               {ui.readMore}
               <ArrowRight size={17} aria-hidden="true" />
             </Link>
