@@ -23,6 +23,7 @@ next-env.d.ts
 ._*
 .DS_Store
 ._*
+*.swp
 
 # Original source material kept outside Git
 /CONTEUDOS/
