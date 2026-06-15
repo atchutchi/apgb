@@ -4,9 +4,16 @@ create table if not exists public.content_items (
   id uuid primary key default gen_random_uuid(),
   type text not null check (type in ('page', 'news', 'project', 'document', 'gallery', 'notice')),
   slug text not null unique,
+  section text not null default 'autoridade-portuaria',
   status text not null default 'draft' check (status in ('draft', 'published', 'archived')),
   source_locale text not null default 'pt' check (source_locale in ('pt', 'fr', 'en')),
+  hero_image text,
+  hero_alt text not null default '',
+  featured boolean not null default false,
+  gallery_urls jsonb not null default '[]'::jsonb,
+  document_urls jsonb not null default '[]'::jsonb,
   published_at timestamptz,
+  deleted_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -45,6 +52,8 @@ create table if not exists public.content_versions (
 
 create index if not exists content_items_status_published_idx
   on public.content_items(status, published_at desc);
+create index if not exists content_items_section_idx
+  on public.content_items(section, status, published_at desc);
 create index if not exists content_translations_content_idx
   on public.content_translations(content_id, locale);
 
@@ -57,7 +66,7 @@ drop policy if exists "Published content is public" on public.content_items;
 create policy "Published content is public"
   on public.content_items for select
   to anon, authenticated
-  using (status = 'published');
+  using (status = 'published' and deleted_at is null);
 
 drop policy if exists "Published translations are public" on public.content_translations;
 create policy "Published translations are public"
@@ -68,6 +77,7 @@ create policy "Published translations are public"
       select 1 from public.content_items
       where content_items.id = content_translations.content_id
         and content_items.status = 'published'
+        and content_items.deleted_at is null
     )
   );
 

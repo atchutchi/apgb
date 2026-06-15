@@ -6,8 +6,9 @@ import { HomeView } from "@/components/site/home-view";
 import { DocumentsView, GalleryView } from "@/components/site/library-view";
 import { isLocale, locales } from "@/config/locales";
 import { primaryNavigation } from "@/config/navigation";
-import { getPageBySlug, pages } from "@/content/pages";
+import { pages } from "@/content/pages";
 import { getLocalizedText } from "@/lib/content";
+import { getPublicPageBySlug } from "@/server/content/public-content";
 
 type RouteParams = Promise<{ locale: string; segments?: string[] }>;
 
@@ -34,7 +35,7 @@ export async function generateMetadata({ params }: { params: RouteParams }): Pro
   if (!segments?.length) return { title: "Administração dos Portos da Guiné-Bissau" };
   if (segments.at(-1) === "galeria") return { title: "Galeria" };
   if (segments.at(-1) === "documentos") return { title: "Documentos" };
-  const page = getPageBySlug(segments.at(-1) || "");
+  const page = await getPublicPageBySlug(segments.at(-1) || "");
   if (!page) return {};
   return {
     title: getLocalizedText(page.title, locale),
@@ -51,7 +52,7 @@ export default async function PublicPage({ params }: { params: RouteParams }) {
   if (slug === "galeria") return <GalleryView locale={locale} />;
   if (slug === "documentos") return <DocumentsView locale={locale} />;
 
-  const page = getPageBySlug(slug);
+  const page = await getPublicPageBySlug(slug);
   if (!page) notFound();
   return <ContentView locale={locale} page={page} />;
 }

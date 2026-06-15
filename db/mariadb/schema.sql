@@ -2,12 +2,20 @@ create table if not exists content_items (
   id char(36) primary key,
   type enum('page', 'news', 'project', 'document', 'gallery', 'notice') not null,
   slug varchar(160) not null unique,
+  section varchar(160) not null default 'autoridade-portuaria',
   status enum('draft', 'published', 'archived') not null default 'draft',
   source_locale enum('pt', 'fr', 'en') not null default 'pt',
+  hero_image varchar(1000) null,
+  hero_alt text not null,
+  featured boolean not null default false,
+  gallery_urls json not null,
+  document_urls json not null,
   published_at datetime null,
+  deleted_at datetime null,
   created_at datetime not null default current_timestamp,
   updated_at datetime not null default current_timestamp on update current_timestamp,
-  index content_items_status_published_idx (status, published_at)
+  index content_items_status_published_idx (status, published_at),
+  index content_items_section_idx (section, status, published_at)
 ) engine=InnoDB default charset=utf8mb4 collate=utf8mb4_unicode_ci;
 
 create table if not exists content_translations (
