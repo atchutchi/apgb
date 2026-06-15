@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { PageContent } from "@/content/pages";
 
-import { resolvePublicPage } from "./public-content";
+import { listFeaturedPublicPages, resolvePublicPage } from "./public-content";
 import type { ContentItem, ContentRepository } from "./types";
 
 const staticPage: PageContent = {
@@ -85,5 +85,26 @@ describe("resolvePublicPage", () => {
     const page = await resolvePublicPage("nova-pagina", repository(dynamic), () => undefined);
 
     expect(page).toMatchObject({ slug: "nova-pagina", section: "projectos" });
+  });
+});
+
+describe("listFeaturedPublicPages", () => {
+  it("coloca conteúdos dinâmicos publicados e destacados antes da base", async () => {
+    const dynamic = item({ slug: "noticia-dinamica", type: "news", featured: true });
+    const featuredStatic = { ...staticPage, slug: "noticia-base", featured: true };
+
+    const pages = await listFeaturedPublicPages(repository(dynamic), [featuredStatic], 3);
+
+    expect(pages.map((page) => page.slug)).toEqual(["noticia-dinamica", "noticia-base"]);
+  });
+
+  it("exclui rascunhos, arquivos e registos removidos", async () => {
+    for (const hidden of [
+      item({ status: "draft", featured: true }),
+      item({ status: "archived", featured: true }),
+      item({ deletedAt: "2026-06-15T11:00:00.000Z", featured: true }),
+    ]) {
+      await expect(listFeaturedPublicPages(repository(hidden), [], 3)).resolves.toEqual([]);
+    }
   });
 });

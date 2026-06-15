@@ -88,3 +88,21 @@ export async function resolvePublicPage(
 export async function getPublicPageBySlug(slug: string): Promise<PageContent | null | undefined> {
   return resolvePublicPage(slug, getContentRepository());
 }
+
+export async function listFeaturedPublicPages(
+  repository: ContentRepository = getContentRepository(),
+  staticPages: PageContent[] = [],
+  limit = 3,
+  type?: ContentItem["type"],
+): Promise<PageContent[]> {
+  const dynamic = (await repository.list())
+    .filter((item) =>
+      item.featured
+      && item.status === "published"
+      && !item.deletedAt
+      && (!type || item.type === type),
+    )
+    .map(toPublicPage);
+  const dynamicSlugs = new Set(dynamic.map((page) => page.slug));
+  return [...dynamic, ...staticPages.filter((page) => !dynamicSlugs.has(page.slug))].slice(0, limit);
+}

@@ -17,6 +17,7 @@ import media from "@/content/media-manifest.json";
 import { getPageBySlug } from "@/content/pages";
 import { getLocalizedText } from "@/lib/content";
 import { pagePath } from "@/lib/paths";
+import { listFeaturedPublicPages } from "@/server/content/public-content";
 
 const serviceSlugs = [
   { slug: "encontrar-contentor", icon: Boxes },
@@ -34,17 +35,22 @@ const projectSlugs = [
   "ajuda-navegacao",
 ];
 
-export function HomeView({ locale }: { locale: Locale }) {
+export async function HomeView({ locale }: { locale: Locale }) {
   const ui = getUi(locale);
   const home = getPageBySlug("")!;
   const institutional = getPageBySlug("quem-somos")!;
   const directorGeneral = getPageBySlug("mensagem-do-director-geral")!;
-  const projects = projectSlugs.map((slug) => getPageBySlug(slug)!);
-  const highlights = [
+  const projects = await listFeaturedPublicPages(
+    undefined,
+    projectSlugs.map((slug) => getPageBySlug(slug)!),
+    4,
+    "project",
+  );
+  const highlights = await listFeaturedPublicPages(undefined, [
     getPageBySlug("inicio-trabalhos-dragagem-porto-bissau")!,
     getPageBySlug("investimentos")!,
     getPageBySlug("tarifario")!,
-  ];
+  ], 3);
 
   return (
     <>
@@ -191,7 +197,7 @@ export function HomeView({ locale }: { locale: Locale }) {
           </div>
           <div className="projects-grid">
             {projects.map((project, index) => (
-              <Link href={pagePath(locale, project.slug)} className="project-card" key={project.slug}>
+              <Link href={pagePath(locale, project.slug, project.section)} className="project-card" key={project.slug}>
                 <Image
                   src={project.heroImage}
                   alt={getLocalizedText(project.heroAlt, locale)}
@@ -219,10 +225,10 @@ export function HomeView({ locale }: { locale: Locale }) {
           </div>
           <div className="editorial-list">
             {highlights.map((item, index) => (
-              <Link href={pagePath(locale, item.slug)} key={item.slug} className="editorial-item">
+              <Link href={pagePath(locale, item.slug, item.section)} key={item.slug} className="editorial-item">
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <div>
-                  <small>{getLocalizedText(getPageBySlug(item.section)!.title, locale)}</small>
+                  <small>{getLocalizedText(getPageBySlug(item.section)?.title || item.title, locale)}</small>
                   <h3>{getLocalizedText(item.title, locale)}</h3>
                   <p>{getLocalizedText(item.summary, locale)}</p>
                 </div>
