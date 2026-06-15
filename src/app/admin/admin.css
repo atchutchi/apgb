@@ -62,6 +62,25 @@
   margin-top: auto;
 }
 
+.admin-user {
+  display: grid;
+  gap: 0.2rem;
+  margin-top: auto;
+  padding: 1rem 0.8rem;
+  border-top: 1px solid #23466d;
+  color: white;
+  font-size: 0.74rem;
+}
+
+.admin-user span {
+  color: #b9cce2;
+  font-size: 0.66rem;
+}
+
+.admin-user + form {
+  margin-top: 0.4rem;
+}
+
 .admin-sidebar button {
   display: flex;
   align-items: center;
@@ -149,6 +168,19 @@
   font-size: 0.7rem;
 }
 
+.admin-section__heading a {
+  color: #0647d9;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.admin-section__heading .admin-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: white;
+}
+
 .provider-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -168,6 +200,21 @@
 .provider-grid small {
   color: #52677f;
   font-size: 0.62rem;
+}
+
+.provider-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+  color: #52677f;
+  font-size: 0.7rem;
+}
+
+.provider-line span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 .provider-grid strong {
@@ -275,6 +322,20 @@
   border-bottom: 1px solid #dce7f2;
 }
 
+.admin-table td:first-child {
+  min-width: 220px;
+}
+
+.admin-table td strong,
+.admin-table td small {
+  display: block;
+}
+
+.admin-table td small {
+  margin-top: 0.2rem;
+  color: #6c8096;
+}
+
 .admin-table th {
   color: #52677f;
   font-size: 0.6rem;
@@ -294,6 +355,38 @@
 .status--published {
   background: #e4f6ed;
   color: #16794b;
+}
+
+.status--archived {
+  background: #fff1df;
+  color: #8a5200;
+}
+
+.admin-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.admin-actions form {
+  display: contents;
+}
+
+.admin-actions a,
+.admin-actions button {
+  display: inline-grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid #d5e1ed;
+  border-radius: 5px;
+  background: white;
+  color: #0647d9;
+  cursor: pointer;
+}
+
+.admin-actions button[aria-label^="Remover"] {
+  color: #a32925;
 }
 
 .admin-login {

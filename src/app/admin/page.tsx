@@ -1,27 +1,51 @@
-import { Database, FileUp, Languages, LockKeyhole, LogOut, Plus, Server, ShieldCheck } from "lucide-react";
+import {
+  Archive,
+  Database,
+  FileUp,
+  Languages,
+  LockKeyhole,
+  LogOut,
+  Pencil,
+  Plus,
+  Server,
+  ShieldCheck,
+  Trash2,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { getAdminSession, isAdminConfigured } from "@/server/auth";
 import { getContentRepository } from "@/server/content/repository";
+import type { ContentItem } from "@/server/content/types";
 import { getProviderConfiguration } from "@/server/providers";
-import { hasAdminSession, isAdminConfigured } from "@/server/auth";
-import { createContentAction, loginAction, logoutAction, uploadAction } from "./actions";
+import {
+  archiveContentAction,
+  createContentAction,
+  loginAction,
+  logoutAction,
+  removeContentAction,
+  updateContentAction,
+  uploadAction,
+} from "./actions";
 
 type AdminProps = {
-  searchParams: Promise<{ erro?: string; estado?: string }>;
+  searchParams: Promise<{ editar?: string; erro?: string; estado?: string }>;
 };
 
 export default async function AdminPage({ searchParams }: AdminProps) {
   const query = await searchParams;
   const configured = isAdminConfigured();
-  const authenticated = configured && (await hasAdminSession());
+  const identity = configured ? await getAdminSession() : null;
 
-  if (!authenticated) {
-    return <Login configured={configured} error={query.erro} />;
-  }
+  if (!identity) return <Login configured={configured} error={query.erro} />;
 
   const providers = getProviderConfiguration();
-  const items = await getContentRepository().list();
+  const repository = getContentRepository();
+  const items = await repository.list();
+  const editing = query.editar ? await repository.getById(query.editar) : null;
+  const published = items.filter((item) => item.status === "published").length;
+  const drafts = items.filter((item) => item.status === "draft").length;
+  const archived = items.filter((item) => item.status === "archived").length;
 
   return (
     <main className="admin-shell">
@@ -32,24 +56,22 @@ export default async function AdminPage({ searchParams }: AdminProps) {
         </Link>
         <nav>
           <a href="#visao-geral" className="is-active">Visão geral</a>
-          <a href="#novo-conteudo">Novo conteúdo</a>
-          <a href="#ficheiros">Ficheiros</a>
-          <a href="#publicacoes">Publicações</a>
+          <a href="#conteudos">Conteúdos</a>
+          <a href="#editor">{editing ? "Editar conteúdo" : "Novo conteúdo"}</a>
+          <a href="#ficheiros">Biblioteca</a>
         </nav>
+        <div className="admin-user">
+          <strong>{identity.name}</strong>
+          <span>{identity.email} · {identity.role}</span>
+        </div>
         <form action={logoutAction}>
-          <button type="submit">
-            <LogOut size={16} aria-hidden="true" />
-            Terminar sessão
-          </button>
+          <button type="submit"><LogOut size={16} aria-hidden="true" />Terminar sessão</button>
         </form>
       </aside>
 
       <div className="admin-main">
         <header className="admin-header">
-          <div>
-            <span>Administração</span>
-            <h1>Gestão do portal</h1>
-          </div>
+          <div><span>Administração</span><h1>Gestão editorial</h1></div>
           <Link href="/pt">Ver site público</Link>
         </header>
 
@@ -57,77 +79,63 @@ export default async function AdminPage({ searchParams }: AdminProps) {
 
         <section id="visao-geral" className="admin-section">
           <div className="admin-section__heading">
-            <div>
-              <h2>Estado dos serviços</h2>
-              <p>Configuração activa neste ambiente.</p>
-            </div>
+            <div><h2>Visão geral</h2><p>Conteúdo e serviços activos neste ambiente.</p></div>
           </div>
           <div className="provider-grid">
+            <ProviderCard icon={ShieldCheck} label="Publicados" value={String(published)} />
+            <ProviderCard icon={Pencil} label="Rascunhos" value={String(drafts)} />
+            <ProviderCard icon={Archive} label="Arquivados" value={String(archived)} />
             <ProviderCard icon={Database} label="Conteúdos" value={providers.content} />
-            <ProviderCard icon={Server} label="Ficheiros" value={providers.storage} />
-            <ProviderCard icon={Languages} label="Tradução" value={providers.translation} />
-            <ProviderCard icon={ShieldCheck} label="Sessão" value="protegida" />
+          </div>
+          <div className="provider-line">
+            <span><Server size={15} /> Ficheiros: {providers.storage}</span>
+            <span><Languages size={15} /> Tradução: {providers.translation}</span>
           </div>
         </section>
 
-        <section id="novo-conteudo" className="admin-section">
+        <section id="conteudos" className="admin-section">
+          <div className="admin-section__heading">
+            <div><h2>Conteúdos</h2><p>{items.length} registos disponíveis para gestão.</p></div>
+            <Link className="admin-primary" href="/admin#editor"><Plus size={16} /> Novo conteúdo</Link>
+          </div>
+          <div className="admin-table-wrap">
+            <table className="admin-table">
+              <thead><tr><th>Título</th><th>Tipo</th><th>Estado</th><th>Actualização</th><th>Acções</th></tr></thead>
+              <tbody>
+                {items.length ? items.map((item) => (
+                  <tr key={item.id}>
+                    <td><strong>{pt(item).title}</strong><small>{item.section} / {item.slug}</small></td>
+                    <td>{item.type}</td>
+                    <td><span className={`status status--${item.status}`}>{item.status}</span></td>
+                    <td>{new Intl.DateTimeFormat("pt-PT").format(new Date(item.updatedAt))}</td>
+                    <td><div className="admin-actions">
+                      <Link href={`/admin?editar=${item.id}#editor`} aria-label={`Editar ${pt(item).title}`}><Pencil size={15} /></Link>
+                      {identity.role === "admin" && <>
+                        <form action={archiveContentAction}><input type="hidden" name="id" value={item.id} /><button aria-label={`Arquivar ${pt(item).title}`}><Archive size={15} /></button></form>
+                        <form action={removeContentAction}><input type="hidden" name="id" value={item.id} /><button aria-label={`Remover ${pt(item).title}`}><Trash2 size={15} /></button></form>
+                      </>}
+                    </div></td>
+                  </tr>
+                )) : <tr><td colSpan={5}>Ainda não existem conteúdos dinâmicos.</td></tr>}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="editor" className="admin-section">
           <div className="admin-section__heading">
             <div>
-              <h2>Publicar conteúdo</h2>
-              <p>O português fica disponível de imediato. A tradução automática segue a configuração activa.</p>
+              <h2>{editing ? "Editar conteúdo" : "Novo conteúdo"}</h2>
+              <p>O português fica disponível de imediato. Use títulos `##` para dividir o corpo em secções.</p>
             </div>
-            <Plus size={22} aria-hidden="true" />
+            {editing ? <Link href="/admin#editor">Cancelar edição</Link> : <Plus size={22} aria-hidden="true" />}
           </div>
-          <form action={createContentAction} className="admin-form">
-            <label>
-              Tipo
-              <select name="type" defaultValue="news">
-                <option value="news">Notícia</option>
-                <option value="page">Página</option>
-                <option value="project">Projecto</option>
-                <option value="notice">Aviso</option>
-                <option value="document">Documento</option>
-                <option value="gallery">Galeria</option>
-              </select>
-            </label>
-            <label>
-              Estado
-              <select name="status" defaultValue="published">
-                <option value="published">Publicado</option>
-                <option value="draft">Rascunho</option>
-                <option value="archived">Arquivado</option>
-              </select>
-            </label>
-            <label className="is-wide">
-              Título
-              <input name="title" required minLength={3} />
-            </label>
-            <label className="is-wide">
-              Identificador da página
-              <input name="slug" required pattern="[a-z0-9-]+" placeholder="exemplo-de-noticia" />
-            </label>
-            <label className="is-wide">
-              Resumo
-              <textarea name="summary" required minLength={10} rows={3} />
-            </label>
-            <label className="is-wide">
-              Conteúdo
-              <textarea name="body" required minLength={10} rows={8} />
-            </label>
-            <label className="admin-checkbox is-wide">
-              <input type="checkbox" name="translate" defaultChecked />
-              Enviar para tradução automática em francês e inglês
-            </label>
-            <button type="submit" className="admin-primary">Publicar conteúdo</button>
-          </form>
+          <ContentForm item={editing} />
         </section>
 
         <section id="ficheiros" className="admin-section">
           <div className="admin-section__heading">
-            <div>
-              <h2>Carregar ficheiro</h2>
-              <p>Fotografias e documentos até 25 MB por ficheiro.</p>
-            </div>
+            <div><h2>Carregar ficheiro</h2><p>Fotografias e documentos até 25 MB por ficheiro.</p></div>
             <FileUp size={22} aria-hidden="true" />
           </div>
           <form action={uploadAction} className="upload-form">
@@ -135,92 +143,61 @@ export default async function AdminPage({ searchParams }: AdminProps) {
             <button type="submit" className="admin-primary">Carregar</button>
           </form>
         </section>
-
-        <section id="publicacoes" className="admin-section">
-          <div className="admin-section__heading">
-            <div>
-              <h2>Publicações recentes</h2>
-              <p>{items.length} conteúdos guardados no repositório activo.</p>
-            </div>
-          </div>
-          <div className="admin-table-wrap">
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Título</th>
-                  <th>Tipo</th>
-                  <th>Estado</th>
-                  <th>Actualização</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.length ? items.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.translations.find((translation) => translation.locale === "pt")?.title}</td>
-                    <td>{item.type}</td>
-                    <td><span className={`status status--${item.status}`}>{item.status}</span></td>
-                    <td>{new Intl.DateTimeFormat("pt-PT").format(new Date(item.updatedAt))}</td>
-                  </tr>
-                )) : (
-                  <tr><td colSpan={4}>Ainda não existem publicações no repositório activo.</td></tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </section>
       </div>
     </main>
   );
 }
 
-function ProviderCard({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: typeof Database;
-  label: string;
-  value: string;
-}) {
+function ContentForm({ item }: { item: ContentItem | null }) {
+  const source = item ? pt(item) : null;
   return (
-    <article>
-      <Icon size={20} aria-hidden="true" />
-      <span>{label}</span>
-      <strong>{value}</strong>
-      <small>Activo</small>
-    </article>
+    <form action={item ? updateContentAction : createContentAction} className="admin-form">
+      {item && <input type="hidden" name="id" value={item.id} />}
+      <label>Tipo<select name="type" defaultValue={item?.type || "news"}>{types.map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></label>
+      <label>Estado<select name="status" defaultValue={item?.status || "draft"}><option value="draft">Rascunho</option><option value="published">Publicado</option><option value="archived">Arquivado</option></select></label>
+      <label>Secção<input name="section" required pattern="[a-z0-9-]+" defaultValue={item?.section || "autoridade-portuaria"} /></label>
+      <label>Identificador da página<input name="slug" required pattern="[a-z0-9-]+" defaultValue={item?.slug} placeholder="exemplo-de-noticia" /></label>
+      <label className="is-wide">Título<input name="title" required minLength={3} defaultValue={source?.title} /></label>
+      <label className="is-wide">Resumo<textarea name="summary" required minLength={10} rows={3} defaultValue={source?.summary} /></label>
+      <label className="is-wide">Conteúdo Markdown<textarea name="body" required minLength={10} rows={12} defaultValue={source?.body} /></label>
+      <label className="is-wide">URL da imagem de capa<input name="heroImage" defaultValue={item?.heroImage || ""} placeholder="/uploads/2026/imagem.webp" /></label>
+      <label className="is-wide">Texto alternativo da capa<input name="heroAlt" defaultValue={item?.heroAlt || ""} /></label>
+      <label className="is-wide">Fotografias da galeria, uma URL por linha<textarea name="galleryUrls" rows={4} defaultValue={item?.galleryUrls.join("\n")} /></label>
+      <label className="is-wide">Documentos, uma URL por linha<textarea name="documentUrls" rows={4} defaultValue={item?.documentUrls.join("\n")} /></label>
+      <label className="admin-checkbox is-wide"><input type="checkbox" name="featured" defaultChecked={item?.featured} />Destacar no portal</label>
+      <label className="admin-checkbox is-wide"><input type="checkbox" name="translate" defaultChecked={!item} />Traduzir automaticamente para francês e inglês</label>
+      <button type="submit" className="admin-primary">{item ? "Guardar alterações" : "Criar conteúdo"}</button>
+    </form>
   );
+}
+
+function pt(item: ContentItem) {
+  return item.translations.find((translation) => translation.locale === "pt") || item.translations[0] || { title: item.slug, summary: "", body: "" };
+}
+
+const types = [
+  ["news", "Notícia"], ["page", "Página"], ["project", "Projecto"],
+  ["notice", "Aviso"], ["document", "Documento"], ["gallery", "Galeria"],
+] as const;
+
+function ProviderCard({ icon: Icon, label, value }: { icon: typeof Database; label: string; value: string }) {
+  return <article><Icon size={20} aria-hidden="true" /><span>{label}</span><strong>{value}</strong><small>Activo</small></article>;
 }
 
 function Login({ configured, error }: { configured: boolean; error?: string }) {
   return (
-    <main className="admin-login">
-      <section>
-        <Link href="/pt" className="admin-brand">
-          <Image src="/media/logo-apgb.png" alt="" width={126} height={48} unoptimized />
-          <span>Portal APGB</span>
-        </Link>
-        <LockKeyhole size={28} aria-hidden="true" />
-        <h1>Acesso administrativo</h1>
-        {configured ? (
-          <>
-            <p>Introduza a palavra-passe definida para a equipa responsável pelo portal.</p>
-            {error && <p className="admin-error">Credenciais inválidas.</p>}
-            <form action={loginAction}>
-              <label>
-                Palavra-passe
-                <input type="password" name="password" required autoComplete="current-password" />
-              </label>
-              <button type="submit" className="admin-primary">Entrar</button>
-            </form>
-          </>
-        ) : (
-          <div className="admin-setup">
-            <strong>Configuração necessária</strong>
-            <p>Defina `ADMIN_PASSWORD` e `AUTH_SECRET` no ambiente de alojamento para activar o painel.</p>
-          </div>
-        )}
-      </section>
-    </main>
+    <main className="admin-login"><section>
+      <Link href="/pt" className="admin-brand"><Image src="/media/logo-apgb.png" alt="" width={126} height={48} unoptimized /><span>Portal APGB</span></Link>
+      <LockKeyhole size={28} aria-hidden="true" /><h1>Acesso administrativo</h1>
+      {configured ? <>
+        <p>Introduza o email e a palavra-passe da equipa responsável pelo portal.</p>
+        {error && <p className="admin-error">Credenciais inválidas.</p>}
+        <form action={loginAction}>
+          <label>Email<input type="email" name="email" autoComplete="username" /></label>
+          <label>Palavra-passe<input type="password" name="password" required autoComplete="current-password" /></label>
+          <button type="submit" className="admin-primary">Entrar</button>
+        </form>
+      </> : <div className="admin-setup"><strong>Configuração necessária</strong><p>Defina `AUTH_DRIVER`, `AUTH_SECRET` e as credenciais do adaptador no alojamento.</p></div>}
+    </section></main>
   );
 }
