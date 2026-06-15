@@ -65,6 +65,11 @@ describe("resolvePublicPage", () => {
       heroImage: "/dynamic.webp",
       galleryUrls: ["/gallery.webp"],
       documentUrls: ["/document.pdf"],
+      publishedAt: {
+        pt: "15 de junho de 2026",
+        fr: "15 juin 2026",
+        en: "June 15, 2026",
+      },
     });
     expect(page?.blocks).toHaveLength(2);
   });

@@ -24,6 +24,23 @@ function localized(item: ContentItem, field: "title" | "summary"): LocalizedText
   return Object.fromEntries(locales.map((locale) => [locale, translation(item, locale)[field]])) as LocalizedText;
 }
 
+function localizedDate(value: string): LocalizedText {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return Object.fromEntries(locales.map((locale) => [locale, value])) as LocalizedText;
+  }
+
+  return Object.fromEntries(locales.map((locale) => [
+    locale,
+    new Intl.DateTimeFormat(locale, {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    }).format(date),
+  ])) as LocalizedText;
+}
+
 function bodyBlocks(item: ContentItem): ContentBlock[] {
   const bodies = Object.fromEntries(locales.map((locale) => [locale, parseBody(translation(item, locale).body)]));
   const count = Math.max(...locales.map((locale) => bodies[locale].length), 0);
@@ -66,9 +83,7 @@ function toPublicPage(item: ContentItem): PageContent {
     blocks: bodyBlocks(item),
     documentUrls: item.documentUrls,
     galleryUrls: item.galleryUrls,
-    publishedAt: item.publishedAt
-      ? Object.fromEntries(locales.map((locale) => [locale, item.publishedAt || ""])) as LocalizedText
-      : undefined,
+    publishedAt: item.publishedAt ? localizedDate(item.publishedAt) : undefined,
     featured: item.featured,
   };
 }
