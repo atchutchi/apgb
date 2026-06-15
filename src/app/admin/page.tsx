@@ -24,9 +24,12 @@ import {
   loginAction,
   logoutAction,
   removeContentAction,
+  removeMediaAction,
   updateContentAction,
+  updateMediaAction,
   uploadAction,
 } from "./actions";
+import { getMediaRepository } from "@/server/media/repository";
 
 type AdminProps = {
   searchParams: Promise<{ editar?: string; erro?: string; estado?: string }>;
@@ -42,6 +45,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
   const providers = getProviderConfiguration();
   const repository = getContentRepository();
   const items = await repository.list();
+  const media = await getMediaRepository().list();
   const editing = query.editar ? await repository.getById(query.editar) : null;
   const published = items.filter((item) => item.status === "published").length;
   const drafts = items.filter((item) => item.status === "draft").length;
@@ -138,10 +142,28 @@ export default async function AdminPage({ searchParams }: AdminProps) {
             <div><h2>Carregar ficheiro</h2><p>Fotografias e documentos até 25 MB por ficheiro.</p></div>
             <FileUp size={22} aria-hidden="true" />
           </div>
-          <form action={uploadAction} className="upload-form">
-            <input type="file" name="file" accept="image/*,.pdf,.doc,.docx" required />
-            <button type="submit" className="admin-primary">Carregar</button>
+          <form action={uploadAction} className="admin-form admin-upload-form">
+            <label>Título<input name="title" placeholder="Título público do ficheiro" /></label>
+            <label>Texto alternativo<input name="altText" placeholder="Descrição acessível da fotografia" /></label>
+            <label className="is-wide">Ficheiro<input type="file" name="file" accept="image/*,.pdf,.doc,.docx" required /></label>
+            <button type="submit" className="admin-primary">Carregar para a biblioteca</button>
           </form>
+          <div className="media-grid">
+            {media.map((item) => <article key={item.id}>
+              {item.kind === "image" ? <Image src={item.url} alt={item.altText} width={320} height={180} unoptimized /> : <div className="media-document"><FileUp size={28} /><span>{item.contentType}</span></div>}
+              <form action={updateMediaAction}>
+                <input type="hidden" name="id" value={item.id} />
+                <label>Título<input name="title" defaultValue={item.title} required /></label>
+                <label>Texto alternativo<input name="altText" defaultValue={item.altText} /></label>
+                <code>{item.url}</code>
+                <button className="admin-primary">Guardar metadados</button>
+              </form>
+              {identity.role === "admin" && <form action={removeMediaAction} className="media-remove">
+                <input type="hidden" name="id" value={item.id} />
+                <button><Trash2 size={14} /> Remover registo</button>
+              </form>}
+            </article>)}
+          </div>
         </section>
       </div>
     </main>

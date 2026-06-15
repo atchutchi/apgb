@@ -9,6 +9,8 @@ export type UploadedAsset = {
   url: string;
   path: string;
   contentType: string;
+  size: number;
+  originalName: string;
 };
 
 export interface StorageProvider {
@@ -22,7 +24,7 @@ class LocalStorageProvider implements StorageProvider {
     const destination = join(process.cwd(), "public", "uploads", path);
     await mkdir(dirname(destination), { recursive: true });
     await writeFile(destination, Buffer.from(await file.arrayBuffer()));
-    return { url: `/uploads/${path}`, path, contentType: file.type };
+    return { url: `/uploads/${path}`, path, contentType: file.type, size: file.size, originalName: file.name };
   }
 }
 
@@ -40,7 +42,7 @@ class SupabaseStorageProvider implements StorageProvider {
     });
     if (error) throw error;
     const { data } = client.storage.from(bucket).getPublicUrl(path);
-    return { url: data.publicUrl, path, contentType: file.type };
+    return { url: data.publicUrl, path, contentType: file.type, size: file.size, originalName: file.name };
   }
 }
 

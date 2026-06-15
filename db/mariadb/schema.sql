@@ -52,3 +52,27 @@ create table if not exists content_versions (
   constraint content_versions_content_fk foreign key (content_id)
     references content_items(id) on delete cascade
 ) engine=InnoDB default charset=utf8mb4 collate=utf8mb4_unicode_ci;
+
+create table if not exists content_media (
+  content_id char(36) not null,
+  media_id char(36) not null,
+  role enum('hero', 'gallery', 'document') not null,
+  position int not null default 0,
+  primary key (content_id, media_id, role),
+  index content_media_content_idx (content_id, role, position),
+  constraint content_media_content_fk foreign key (content_id)
+    references content_items(id) on delete cascade,
+  constraint content_media_media_fk foreign key (media_id)
+    references media_items(id) on delete restrict
+) engine=InnoDB default charset=utf8mb4 collate=utf8mb4_unicode_ci;
+
+create table if not exists admin_users (
+  id char(36) primary key,
+  email varchar(240) not null unique,
+  name varchar(240) not null,
+  role enum('admin', 'editor') not null default 'editor',
+  password_hash varchar(500) not null,
+  active boolean not null default true,
+  created_at datetime not null default current_timestamp,
+  updated_at datetime not null default current_timestamp on update current_timestamp
+) engine=InnoDB default charset=utf8mb4 collate=utf8mb4_unicode_ci;
