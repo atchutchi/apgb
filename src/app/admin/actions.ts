@@ -9,6 +9,7 @@ import {
   clearAdminSession,
   createAdminSession,
   requireAdminRole,
+  updateAdminProfile,
 } from "@/server/auth";
 import { getContentRepository } from "@/server/content/repository";
 import type { CreateContentInput } from "@/server/content/types";
@@ -29,6 +30,11 @@ const contentSchema = z.object({
   galleryUrls: z.array(z.string().max(1000)),
   documentUrls: z.array(z.string().max(1000)),
   translate: z.boolean(),
+});
+
+const profileSchema = z.object({
+  name: z.string().trim().min(2).max(160),
+  password: z.string().min(10).max(200).optional(),
 });
 
 function list(value: FormDataEntryValue | null): string[] {
@@ -75,6 +81,22 @@ export async function loginAction(formData: FormData) {
 export async function logoutAction() {
   await clearAdminSession();
   redirect("/admin");
+}
+
+export async function updateProfileAction(formData: FormData) {
+  const identity = await requireAdminRole("editor");
+  if (!identity) redirect("/admin");
+  const password = String(formData.get("password") || "");
+  const passwordConfirm = String(formData.get("passwordConfirm") || "");
+  if (password && password !== passwordConfirm) redirect("/admin?erro=perfil-password#perfil");
+  const input = profileSchema.parse({
+    name: formData.get("name"),
+    password: password || undefined,
+  });
+  const updated = await updateAdminProfile(identity, input);
+  await createAdminSession(updated);
+  revalidatePath("/admin");
+  redirect("/admin?estado=perfil-actualizado#perfil");
 }
 
 export async function createContentAction(formData: FormData) {

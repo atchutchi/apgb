@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { createClient } from "@supabase/supabase-js";
 
-import { authenticateAdmin, authenticateLocalAdmin, hasRequiredRole } from "./auth";
+import { authenticateAdmin, authenticateLocalAdmin, hasRequiredRole, updateAdminProfile } from "./auth";
 
 vi.mock("@supabase/supabase-js", () => ({
   createClient: vi.fn(),
@@ -51,6 +51,22 @@ describe("hasRequiredRole", () => {
   it("impede o editor de executar acções exclusivas do administrador", () => {
     expect(hasRequiredRole(editor, "editor")).toBe(true);
     expect(hasRequiredRole(editor, "admin")).toBe(false);
+  });
+});
+
+describe("updateAdminProfile", () => {
+  it("actualiza o nome apresentado no modo local sem alterar email ou papel", async () => {
+    vi.stubEnv("AUTH_DRIVER", "local");
+
+    await expect(updateAdminProfile(
+      { id: "local-admin", email: "admin@apgb.gw", name: "Administrador", role: "admin" },
+      { name: "Direccao APGB" },
+    )).resolves.toEqual({
+      id: "local-admin",
+      email: "admin@apgb.gw",
+      name: "Direccao APGB",
+      role: "admin",
+    });
   });
 });
 

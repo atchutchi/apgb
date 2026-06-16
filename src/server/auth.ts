@@ -1,4 +1,4 @@
-import { scryptSync, timingSafeEqual } from "node:crypto";
+import { randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
@@ -16,6 +16,11 @@ export type AdminIdentity = {
 };
 
 type Environment = Record<string, string | undefined>;
+
+export type UpdateAdminProfileInput = {
+  name: string;
+  password?: string;
+};
 
 type SupabaseAdminProfile = {
   name: string | null;
@@ -119,6 +124,77 @@ function verifyScryptPassword(password: string, encoded: string): boolean {
   if (algorithm !== "scrypt" || !salt || !hash) return false;
   const calculated = scryptSync(password, salt, Buffer.from(hash, "hex").length);
   return timingSafeEqual(calculated, Buffer.from(hash, "hex"));
+}
+
+function createScryptPassword(password: string): string {
+  const salt = randomUUID();
+  const hash = scryptSync(password, salt, 64).toString("hex");
+  return `scrypt$${salt}$${hash}`;
+}
+
+export async function updateAdminProfile(
+  identity: AdminIdentity,
+  input: UpdateAdminProfileInput,
+): Promise<AdminIdentity> {
+  const driver = process.env.AUTH_DRIVER || "local";
+  if (driver === "supabase") return updateSupabaseAdminProfile(identity, input);
+  if (driver === "mariadb") return updateMariaDbAdminProfile(identity, input);
+  return { ...identity, name: input.name || identity.name };
+}
+
+async function updateSupabaseAdminProfile(
+  identity: AdminIdentity,
+  input: UpdateAdminProfileInput,
+): Promise<AdminIdentity> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) throw new Error("Configuracao Supabase incompleta.");
+  const client = createClient(url, key, { auth: { persistSession: false } });
+  if (input.password) {
+    const { error } = await client.auth.admin.updateUserById(identity.id, { password: input.password });
+    if (error) throw error;
+  }
+  const { data, error } = await client
+    .from("admin_profiles")
+    .update({ name: input.name, updated_at: new Date().toISOString() })
+    .eq("user_id", identity.id)
+    .select("name, role, active")
+    .maybeSingle<SupabaseAdminProfile>();
+  if (error) throw error;
+  if (!data || data.active === false || (data.role !== "admin" && data.role !== "editor")) {
+    throw new Error("Perfil administrativo invalido.");
+  }
+  return { ...identity, name: data.name || identity.name, role: data.role };
+}
+
+async function updateMariaDbAdminProfile(
+  identity: AdminIdentity,
+  input: UpdateAdminProfileInput,
+): Promise<AdminIdentity> {
+  if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL nao configurada.");
+  const pool = mysql.createPool(process.env.DATABASE_URL);
+  try {
+    if (input.password) {
+      await pool.execute(
+        "UPDATE admin_users SET name=?, password_hash=? WHERE id=? AND active=1",
+        [input.name, createScryptPassword(input.password), identity.id],
+      );
+    } else {
+      await pool.execute(
+        "UPDATE admin_users SET name=? WHERE id=? AND active=1",
+        [input.name, identity.id],
+      );
+    }
+    const [rows] = await pool.execute(
+      "SELECT id, email, name, role FROM admin_users WHERE id=? AND active=1 LIMIT 1",
+      [identity.id],
+    );
+    const user = (rows as AdminIdentity[])[0];
+    if (!user || (user.role !== "admin" && user.role !== "editor")) throw new Error("Perfil administrativo invalido.");
+    return { id: user.id, email: user.email, name: user.name, role: user.role };
+  } finally {
+    await pool.end();
+  }
 }
 
 export function verifyAdminPassword(password: string): boolean {

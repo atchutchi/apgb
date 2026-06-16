@@ -10,6 +10,7 @@ import {
   Server,
   ShieldCheck,
   Trash2,
+  UserRound,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -27,6 +28,7 @@ import {
   removeMediaAction,
   updateContentAction,
   updateMediaAction,
+  updateProfileAction,
   uploadAction,
 } from "./actions";
 import { getMediaRepository } from "@/server/media/repository";
@@ -60,6 +62,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
         </Link>
         <nav>
           <a href="#visao-geral" className="is-active">Visão geral</a>
+          <a href="#perfil">Perfil</a>
           <a href="#conteudos">Conteúdos</a>
           <a href="#editor">{editing ? "Editar conteúdo" : "Novo conteúdo"}</a>
           <a href="#ficheiros">Biblioteca</a>
@@ -80,6 +83,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
         </header>
 
         {query.estado && <p className="admin-notice">Operação concluída: {query.estado.replaceAll("-", " ")}.</p>}
+        {query.erro === "perfil-password" && <p className="admin-error">A confirmação da palavra-passe não corresponde.</p>}
 
         <section id="visao-geral" className="admin-section">
           <div className="admin-section__heading">
@@ -95,6 +99,21 @@ export default async function AdminPage({ searchParams }: AdminProps) {
             <span><Server size={15} /> Ficheiros: {providers.storage}</span>
             <span><Languages size={15} /> Tradução: {providers.translation}</span>
           </div>
+        </section>
+
+        <section id="perfil" className="admin-section">
+          <div className="admin-section__heading">
+            <div><h2>Perfil</h2><p>Dados da conta administrativa em sessão.</p></div>
+            <UserRound size={22} aria-hidden="true" />
+          </div>
+          <form action={updateProfileAction} className="admin-form">
+            <label>Nome apresentado<input name="name" required minLength={2} defaultValue={identity.name} /></label>
+            <label>Email<input value={identity.email} readOnly /></label>
+            <label>Papel<input value={identity.role} readOnly /></label>
+            <label>Nova palavra-passe<input type="password" name="password" minLength={10} autoComplete="new-password" /></label>
+            <label>Confirmar palavra-passe<input type="password" name="passwordConfirm" minLength={10} autoComplete="new-password" /></label>
+            <button type="submit" className="admin-primary">Guardar perfil</button>
+          </form>
         </section>
 
         <section id="conteudos" className="admin-section">
