@@ -1,6 +1,17 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { authenticateLocalAdmin, hasRequiredRole } from "./auth";
+import { createClient } from "@supabase/supabase-js";
+
+import { authenticateAdmin, authenticateLocalAdmin, hasRequiredRole } from "./auth";
+
+vi.mock("@supabase/supabase-js", () => ({
+  createClient: vi.fn(),
+}));
+
+afterEach(() => {
+  vi.clearAllMocks();
+  vi.unstubAllEnvs();
+});
 
 describe("authenticateLocalAdmin", () => {
   const environment = {
@@ -42,3 +53,83 @@ describe("hasRequiredRole", () => {
     expect(hasRequiredRole(editor, "admin")).toBe(false);
   });
 });
+
+describe("authenticateAdmin with Supabase", () => {
+  it("usa o perfil administrativo activo quando existe", async () => {
+    mockSupabaseProfile({
+      profile: { name: "Editora APGB", role: "editor", active: true },
+      appMetadata: { role: "admin", name: "Metadata" },
+      email: "editor@apgb.gw",
+    });
+    vi.stubEnv("AUTH_DRIVER", "supabase");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://apgb.supabase.co");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "anon");
+
+    await expect(authenticateAdmin("editor@apgb.gw", "segredo")).resolves.toEqual({
+      id: "user-1",
+      email: "editor@apgb.gw",
+      name: "Editora APGB",
+      role: "editor",
+    });
+  });
+
+  it("recusa perfis administrativos inactivos", async () => {
+    mockSupabaseProfile({
+      profile: { name: "Admin APGB", role: "admin", active: false },
+      appMetadata: { role: "admin", name: "Admin APGB" },
+      email: "admin@apgb.gw",
+    });
+    vi.stubEnv("AUTH_DRIVER", "supabase");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://apgb.supabase.co");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "anon");
+
+    await expect(authenticateAdmin("admin@apgb.gw", "segredo")).resolves.toBeNull();
+  });
+
+  it("mantem compatibilidade com app_metadata quando ainda nao existe perfil", async () => {
+    mockSupabaseProfile({
+      profile: null,
+      appMetadata: { role: "admin", name: "Administrador APGB" },
+      email: "admin@apgb.gw",
+    });
+    vi.stubEnv("AUTH_DRIVER", "supabase");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://apgb.supabase.co");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "anon");
+
+    await expect(authenticateAdmin("admin@apgb.gw", "segredo")).resolves.toEqual({
+      id: "user-1",
+      email: "admin@apgb.gw",
+      name: "Administrador APGB",
+      role: "admin",
+    });
+  });
+});
+
+function mockSupabaseProfile({
+  profile,
+  appMetadata,
+  email,
+}: {
+  profile: { name: string; role: "admin" | "editor"; active: boolean } | null;
+  appMetadata: Record<string, string>;
+  email: string;
+}) {
+  const maybeSingle = vi.fn().mockResolvedValue({ data: profile, error: null });
+  const eq = vi.fn(() => ({ maybeSingle }));
+  const select = vi.fn(() => ({ eq }));
+  vi.mocked(createClient).mockReturnValue({
+    auth: {
+      signInWithPassword: vi.fn().mockResolvedValue({
+        data: {
+          user: {
+            id: "user-1",
+            email,
+            app_metadata: appMetadata,
+          },
+        },
+        error: null,
+      }),
+    },
+    from: vi.fn(() => ({ select })),
+  } as never);
+}

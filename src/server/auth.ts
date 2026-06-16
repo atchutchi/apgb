@@ -17,6 +17,12 @@ export type AdminIdentity = {
 
 type Environment = Record<string, string | undefined>;
 
+type SupabaseAdminProfile = {
+  name: string | null;
+  role: AdminRole | null;
+  active: boolean | null;
+};
+
 function secret(): Uint8Array | null {
   return process.env.AUTH_SECRET ? new TextEncoder().encode(process.env.AUTH_SECRET) : null;
 }
@@ -68,6 +74,20 @@ async function authenticateSupabase(email: string, password: string): Promise<Ad
   const client = createClient(url, key, { auth: { persistSession: false } });
   const { data, error } = await client.auth.signInWithPassword({ email, password });
   if (error || !data.user) return null;
+  const { data: profile } = await client
+    .from("admin_profiles")
+    .select("name, role, active")
+    .eq("user_id", data.user.id)
+    .maybeSingle<SupabaseAdminProfile>();
+  if (profile) {
+    if (profile.active === false || (profile.role !== "admin" && profile.role !== "editor")) return null;
+    return {
+      id: data.user.id,
+      email: data.user.email || email,
+      name: profile.name || data.user.email || "Equipa APGB",
+      role: profile.role,
+    };
+  }
   const role = data.user.app_metadata.role;
   if (role !== "admin" && role !== "editor") return null;
   return {
