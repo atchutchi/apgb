@@ -5,8 +5,8 @@ import { SupabaseMediaRepository } from "./supabase-repository";
 import type { MediaRepository } from "./types";
 
 export function getMediaRepository(): MediaRepository {
-  const driver = getProviderConfiguration().content;
-  if (driver === "supabase") return new SupabaseMediaRepository();
-  if (driver === "mariadb") return new MariaDbMediaRepository();
+  const { content, storage } = getProviderConfiguration();
+  if (storage === "supabase") return new SupabaseMediaRepository();
+  if (content === "mariadb") return new MariaDbMediaRepository();
   return new LocalMediaRepository();
 }
