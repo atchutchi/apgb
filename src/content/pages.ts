@@ -18,6 +18,11 @@ export type PageContent = {
   galleryUrls?: string[];
   publishedAt?: LocalizedText;
   featured?: boolean;
+  menuItems?: Array<{
+    slug: string;
+    label: LocalizedText;
+    summary: LocalizedText;
+  }>;
 };
 
 const localized = (pt: string, fr?: string, en?: string): LocalizedText => ({
@@ -420,8 +425,15 @@ export const pages: PageContent[] = primaryNavigation.flatMap((section) => {
     summary: localized(sectionDescriptions[section.slug]),
     heroImage: imageFor(section.slug),
     heroAlt: localized(sectionAlt[section.slug]),
-    blocks: blocksFor(section.label.pt, section.slug),
+    blocks: [],
     featured: true,
+    menuItems: (section.children || [])
+      .filter((item) => !item.group)
+      .map((item) => ({
+        slug: item.slug,
+        label: item.label,
+        summary: localized(customSummaries[item.slug] || sectionDescriptions[section.slug]),
+      })),
   };
 
   const children = (section.children || []).map<PageContent>((item) => ({

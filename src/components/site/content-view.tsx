@@ -21,9 +21,11 @@ function documentName(url: string): string {
 export function ContentView({ locale, page }: { locale: Locale; page: PageContent }) {
   const ui = getUi(locale);
   const section = primaryNavigation.find((item) => item.slug === page.section);
-  const related = (section?.children || [])
-    .filter((item) => !item.group && item.slug !== page.slug)
-    .slice(0, 5);
+  const related = page.menuItems?.length
+    ? []
+    : (section?.children || [])
+      .filter((item) => !item.group && item.slug !== page.slug)
+      .slice(0, 5);
   const photoStart = Math.abs(page.slug.split("").reduce((total, char) => total + char.charCodeAt(0), 0)) %
     (media.gallery.length - 3);
 
@@ -67,6 +69,21 @@ export function ContentView({ locale, page }: { locale: Locale; page: PageConten
         <article className="article">
           {locale !== "pt" && page.summary[locale] === page.summary.pt && (
             <p className="translation-note">{ui.publishedInPt}</p>
+          )}
+          {!!page.menuItems?.length && (
+            <section className="section-menu">
+              <span className="article-index">01</span>
+              <h2>{getLocalizedText(page.title, locale)}</h2>
+              <div className="section-menu__grid">
+                {page.menuItems.map((item) => (
+                  <Link href={pagePath(locale, item.slug, page.section)} key={item.slug}>
+                    <strong>{getLocalizedText(item.label, locale)}</strong>
+                    <span>{getLocalizedText(item.summary, locale)}</span>
+                    <ArrowRight size={16} aria-hidden="true" />
+                  </Link>
+                ))}
+              </div>
+            </section>
           )}
           {page.blocks.map((block, index) => (
             <section key={`${page.slug}-${index}`}>
@@ -138,17 +155,19 @@ export function ContentView({ locale, page }: { locale: Locale; page: PageConten
             </section>
           )}
         </article>
-        <aside className="article-aside">
-          <span>{ui.related}</span>
-          <nav>
-            {related.map((item) => (
-              <Link href={pagePath(locale, item.slug)} key={item.slug}>
-                {getLocalizedText(item.label, locale)}
-                <ArrowRight size={15} aria-hidden="true" />
-              </Link>
-            ))}
-          </nav>
-        </aside>
+        {!!related.length && (
+          <aside className="article-aside">
+            <span>{ui.related}</span>
+            <nav>
+              {related.map((item) => (
+                <Link href={pagePath(locale, item.slug)} key={item.slug}>
+                  {getLocalizedText(item.label, locale)}
+                  <ArrowRight size={15} aria-hidden="true" />
+                </Link>
+              ))}
+            </nav>
+          </aside>
+        )}
       </div>
 
       <section className="context-gallery">

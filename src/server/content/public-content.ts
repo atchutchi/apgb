@@ -1,4 +1,5 @@
 import type { LocalizedText } from "@/lib/content";
+import { primaryNavigation } from "@/config/navigation";
 import { getPageBySlug, type ContentBlock, type PageContent } from "@/content/pages";
 
 import { getContentRepository } from "./repository";
@@ -73,6 +74,7 @@ function parseBody(body: string): Array<{ title: string; text: string }> {
 }
 
 function toPublicPage(item: ContentItem): PageContent {
+  const menu = primaryNavigation.find((section) => section.slug === item.slug);
   return {
     slug: item.slug,
     section: item.section,
@@ -85,6 +87,14 @@ function toPublicPage(item: ContentItem): PageContent {
     galleryUrls: item.galleryUrls,
     publishedAt: item.publishedAt ? localizedDate(item.publishedAt) : undefined,
     featured: item.featured,
+    menuItems: menu?.children
+      ?.filter((child) => !child.group)
+      .map((child) => ({
+        slug: child.slug,
+        label: child.label,
+        summary: getPageBySlug(child.slug)?.summary
+          || Object.fromEntries(locales.map((locale) => [locale, child.label[locale] || child.label.pt])) as LocalizedText,
+      })),
   };
 }
 

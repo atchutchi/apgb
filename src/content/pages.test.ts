@@ -29,6 +29,20 @@ describe("public page catalogue", () => {
     expect(new Set(pages.map((page) => page.slug)).size).toBe(pages.length);
   });
 
+  it("uses parent menu pages as section indexes instead of generic article pages", () => {
+    const parentSlugs = primaryNavigation.map((section) => section.slug).filter(Boolean);
+
+    for (const slug of parentSlugs) {
+      const page = pages.find((item) => item.slug === slug);
+      const navigation = primaryNavigation.find((section) => section.slug === slug);
+
+      expect(page?.blocks, `${slug} should not render generic filler blocks`).toEqual([]);
+      expect(page?.menuItems?.map((item) => item.slug)).toEqual(
+        navigation?.children?.filter((item) => !item.group).map((item) => item.slug),
+      );
+    }
+  });
+
   it("uses the approved images for the Director-General and institutional pages", () => {
     expect(pages.find((page) => page.slug === "mensagem-do-director-geral")?.heroImage).toBe(
       "/media/gallery/dsc_4003.webp",

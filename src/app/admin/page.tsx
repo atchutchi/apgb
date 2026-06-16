@@ -16,6 +16,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { getAdminSession, isAdminConfigured } from "@/server/auth";
+import { pages, type PageContent } from "@/content/pages";
 import { getContentRepository } from "@/server/content/repository";
 import type { ContentItem } from "@/server/content/types";
 import { getProviderConfiguration } from "@/server/providers";
@@ -34,7 +35,7 @@ import {
 import { getMediaRepository } from "@/server/media/repository";
 
 type AdminProps = {
-  searchParams: Promise<{ editar?: string; erro?: string; estado?: string }>;
+  searchParams: Promise<{ editar?: string; erro?: string; estado?: string; pagina?: string }>;
 };
 
 export default async function AdminPage({ searchParams }: AdminProps) {
@@ -48,7 +49,14 @@ export default async function AdminPage({ searchParams }: AdminProps) {
   const repository = getContentRepository();
   const items = await repository.list();
   const media = await getMediaRepository().list();
-  const editing = query.editar ? await repository.getById(query.editar) : null;
+  const editing = query.editar
+    ? await repository.getById(query.editar)
+    : query.pagina
+      ? await repository.getBySlug(query.pagina)
+      : null;
+  const baseEditing = query.pagina ? pages.find((page) => page.slug === query.pagina) || null : null;
+  const dynamicSlugs = new Set(items.map((item) => item.slug));
+  const sitePages = pages.filter((page) => page.slug);
   const published = items.filter((item) => item.status === "published").length;
   const drafts = items.filter((item) => item.status === "draft").length;
   const archived = items.filter((item) => item.status === "archived").length;
@@ -63,8 +71,9 @@ export default async function AdminPage({ searchParams }: AdminProps) {
         <nav>
           <a href="#visao-geral" className="is-active">Visão geral</a>
           <a href="#perfil">Perfil</a>
+          <a href="#paginas">Páginas</a>
           <a href="#conteudos">Conteúdos</a>
-          <a href="#editor">{editing ? "Editar conteúdo" : "Novo conteúdo"}</a>
+          <a href="#editor">{editing || baseEditing ? "Editar página" : "Novo conteúdo"}</a>
           <a href="#ficheiros">Biblioteca</a>
         </nav>
         <div className="admin-user">
@@ -118,7 +127,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
 
         <section id="conteudos" className="admin-section">
           <div className="admin-section__heading">
-            <div><h2>Conteúdos</h2><p>{items.length} registos disponíveis para gestão.</p></div>
+            <div><h2>Conteúdos dinâmicos</h2><p>{items.length} registos criados no CMS.</p></div>
             <Link className="admin-primary" href="/admin#editor"><Plus size={16} /> Novo conteúdo</Link>
           </div>
           <div className="admin-table-wrap">
@@ -145,15 +154,38 @@ export default async function AdminPage({ searchParams }: AdminProps) {
           </div>
         </section>
 
+        <section id="paginas" className="admin-section">
+          <div className="admin-section__heading">
+            <div><h2>Páginas do site</h2><p>{sitePages.length} páginas públicas podem ser substituídas pelo CMS.</p></div>
+          </div>
+          <div className="admin-table-wrap">
+            <table className="admin-table">
+              <thead><tr><th>Página</th><th>Secção</th><th>Origem</th><th>Acções</th></tr></thead>
+              <tbody>
+                {sitePages.map((page) => (
+                  <tr key={page.slug}>
+                    <td><strong>{page.title.pt}</strong><small>{page.slug}</small></td>
+                    <td>{page.section}</td>
+                    <td><span className={`status ${dynamicSlugs.has(page.slug) ? "status--published" : ""}`}>{dynamicSlugs.has(page.slug) ? "CMS" : "base"}</span></td>
+                    <td><div className="admin-actions">
+                      <Link href={`/admin?pagina=${page.slug}#editor`} aria-label={`Editar ${page.title.pt}`}><Pencil size={15} /></Link>
+                    </div></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
         <section id="editor" className="admin-section">
           <div className="admin-section__heading">
             <div>
-              <h2>{editing ? "Editar conteúdo" : "Novo conteúdo"}</h2>
+              <h2>{editing || baseEditing ? "Editar página" : "Novo conteúdo"}</h2>
               <p>O português fica disponível de imediato. Use títulos `##` para dividir o corpo em secções.</p>
             </div>
             {editing ? <Link href="/admin#editor">Cancelar edição</Link> : <Plus size={22} aria-hidden="true" />}
           </div>
-          <ContentForm item={editing} />
+          <ContentForm item={editing} basePage={baseEditing} />
         </section>
 
         <section id="ficheiros" className="admin-section">
@@ -189,31 +221,41 @@ export default async function AdminPage({ searchParams }: AdminProps) {
   );
 }
 
-function ContentForm({ item }: { item: ContentItem | null }) {
+function ContentForm({ item, basePage }: { item: ContentItem | null; basePage: PageContent | null }) {
   const source = item ? pt(item) : null;
+  const baseBody = basePage ? pageBody(basePage) : "";
   return (
     <form action={item ? updateContentAction : createContentAction} className="admin-form">
       {item && <input type="hidden" name="id" value={item.id} />}
-      <label>Tipo<select name="type" defaultValue={item?.type || "news"}>{types.map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></label>
+      <label>Tipo<select name="type" defaultValue={item?.type || "page"}>{types.map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></label>
       <label>Estado<select name="status" defaultValue={item?.status || "draft"}><option value="draft">Rascunho</option><option value="published">Publicado</option><option value="archived">Arquivado</option></select></label>
-      <label>Secção<input name="section" required pattern="[a-z0-9-]+" defaultValue={item?.section || "autoridade-portuaria"} /></label>
-      <label>Identificador da página<input name="slug" required pattern="[a-z0-9-]+" defaultValue={item?.slug} placeholder="exemplo-de-noticia" /></label>
-      <label className="is-wide">Título<input name="title" required minLength={3} defaultValue={source?.title} /></label>
-      <label className="is-wide">Resumo<textarea name="summary" required minLength={10} rows={3} defaultValue={source?.summary} /></label>
-      <label className="is-wide">Conteúdo Markdown<textarea name="body" required minLength={10} rows={12} defaultValue={source?.body} /></label>
-      <label className="is-wide">URL da imagem de capa<input name="heroImage" defaultValue={item?.heroImage || ""} placeholder="/uploads/2026/imagem.webp" /></label>
-      <label className="is-wide">Texto alternativo da capa<input name="heroAlt" defaultValue={item?.heroAlt || ""} /></label>
-      <label className="is-wide">Fotografias da galeria, uma URL por linha<textarea name="galleryUrls" rows={4} defaultValue={item?.galleryUrls.join("\n")} /></label>
-      <label className="is-wide">Documentos, uma URL por linha<textarea name="documentUrls" rows={4} defaultValue={item?.documentUrls.join("\n")} /></label>
+      <label>Secção<input name="section" required pattern="[a-z0-9-]+" defaultValue={item?.section || basePage?.section || "autoridade-portuaria"} /></label>
+      <label>Identificador da página<input name="slug" required pattern="[a-z0-9-]+" defaultValue={item?.slug || basePage?.slug} placeholder="exemplo-de-noticia" /></label>
+      <label className="is-wide">Título<input name="title" required minLength={3} defaultValue={source?.title || basePage?.title.pt} /></label>
+      <label className="is-wide">Resumo<textarea name="summary" required minLength={10} rows={3} defaultValue={source?.summary || basePage?.summary.pt} /></label>
+      <label className="is-wide">Conteúdo Markdown<textarea name="body" required minLength={10} rows={12} defaultValue={source?.body || baseBody} /></label>
+      <label className="is-wide">URL da imagem de capa<input name="heroImage" defaultValue={item?.heroImage || basePage?.heroImage || ""} placeholder="/uploads/2026/imagem.webp" /></label>
+      <label className="is-wide">Texto alternativo da capa<input name="heroAlt" defaultValue={item?.heroAlt || basePage?.heroAlt.pt || ""} /></label>
+      <label className="is-wide">Fotografias da galeria, uma URL por linha<textarea name="galleryUrls" rows={4} defaultValue={(item?.galleryUrls || basePage?.galleryUrls || []).join("\n")} /></label>
+      <label className="is-wide">Documentos, uma URL por linha<textarea name="documentUrls" rows={4} defaultValue={(item?.documentUrls || basePage?.documentUrls || []).join("\n")} /></label>
       <label className="admin-checkbox is-wide"><input type="checkbox" name="featured" defaultChecked={item?.featured} />Destacar no portal</label>
       <label className="admin-checkbox is-wide"><input type="checkbox" name="translate" defaultChecked={!item} />Traduzir automaticamente para francês e inglês</label>
-      <button type="submit" className="admin-primary">{item ? "Guardar alterações" : "Criar conteúdo"}</button>
+      <button type="submit" className="admin-primary">{item ? "Guardar alterações" : basePage ? "Criar versão editável" : "Criar conteúdo"}</button>
     </form>
   );
 }
 
 function pt(item: ContentItem) {
   return item.translations.find((translation) => translation.locale === "pt") || item.translations[0] || { title: item.slug, summary: "", body: "" };
+}
+
+function pageBody(page: PageContent): string {
+  if (page.blocks.length) {
+    return page.blocks
+      .map((block) => `## ${block.title.pt}\n${block.text.pt}`)
+      .join("\n\n");
+  }
+  return `## Conteúdo\n${page.summary.pt}`;
 }
 
 const types = [
