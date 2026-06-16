@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap");
-
 :root {
   --apgb-blue: #0647d9;
   --apgb-blue-dark: #043b8f;
@@ -11,6 +9,7 @@
   --surface: #f3f7fb;
   --line: #dce7f2;
   --success: #16794b;
+  --font-interface: "Segoe UI", Roboto, Arial, sans-serif;
   --shell: min(1440px, calc(100vw - clamp(2rem, 8vw, 9rem)));
 }
 
@@ -26,7 +25,7 @@ body {
   margin: 0;
   background: var(--canvas);
   color: var(--ink);
-  font-family: "Public Sans", Arial, sans-serif;
+  font-family: var(--font-interface);
   font-size: 1rem;
   line-height: 1.6;
 }

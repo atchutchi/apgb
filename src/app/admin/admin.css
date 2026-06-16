@@ -3,7 +3,7 @@
   min-height: 100vh;
   background: #f2f6fb;
   color: #10233f;
-  font-family: "Public Sans", Arial, sans-serif;
+  font-family: var(--font-interface);
 }
 
 .admin-shell {
