@@ -4,9 +4,15 @@
 /out/
 /build/
 /coverage/
+/.turbo/
+/.vite/
 *.tsbuildinfo
 next-env.d.ts
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 *.pem
 
 # Local configuration
@@ -14,15 +20,18 @@ next-env.d.ts
 .env.*
 !.env.example
 .vercel/
+.vscode/
+.idea/
 
 # Local design sessions
 .superpowers/
 .impeccable/
 
-# macOS metadata
+# OS metadata
 ._*
 .DS_Store
-._*
+Thumbs.db
+desktop.ini
 *.swp
 
 # Original source material kept outside Git
@@ -31,11 +40,23 @@ next-env.d.ts
 /logo/
 /DSC_*.JPG
 /*.docx
+/*.doc
 /*.pdf
 /*.pptx
+/*.xls
+/*.xlsx
 /*.jpg
+/*.jpeg
 /*.png
+/*.JPG
+/*.JPEG
+/*.PNG
+/*.PDF
+/*.DOCX
+/*.PPTX
+/*.zip
 
 # Runtime content and uploads for cPanel/local mode
 /data/runtime/
 /public/uploads/
+/tmp/

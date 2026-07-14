@@ -1,6 +1,24 @@
 {
   "gallery": [
     {
+      "source": "sede-principal.png",
+      "url": "/media/gallery/sede-principal.webp",
+      "category": "infraestruturas",
+      "alt": "Sede principal da Administração dos Portos da Guiné-Bissau"
+    },
+    {
+      "source": "Gemini_Generated_Image_li0268li0268li02.png",
+      "url": "/media/gallery/Gemini_Generated_Image_li0268li0268li02.webp",
+      "category": "infraestruturas",
+      "alt": "Entrada e controlo de acesso do Porto de Bissau"
+    },
+    {
+      "source": "edificio-operacoes (2).png",
+      "url": "/media/gallery/edificio-operacoes-2.webp",
+      "category": "infraestruturas",
+      "alt": "Edifício de apoio às operações portuárias"
+    },
+    {
       "source": "DSC_3942.JPG",
       "url": "/media/gallery/dsc_3942.webp",
       "category": "pessoas",
@@ -449,6 +467,252 @@
       "url": "/media/gallery/dragagem-img-9245.webp",
       "category": "operacoes",
       "alt": "Delegação institucional percorre o cais do Porto de Bissau"
+    },
+    {
+      "source": "clinica.webp",
+      "url": "/media/gallery/clinica.webp",
+      "category": "infraestruturas",
+      "alt": "Posto clínico da APGB no Porto de Bissau"
+    },
+    {
+      "source": "IMG-20260713-WA0020.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0020.webp",
+      "category": "pessoas",
+      "alt": "Responsavel da APGB no escritorio do Porto de Bissau"
+    },
+    {
+      "source": "IMG-20260713-WA0021.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0021.webp",
+      "category": "pessoas",
+      "alt": "Retrato institucional de um responsavel da APGB"
+    },
+    {
+      "source": "IMG-20260713-WA0022.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0022.webp",
+      "category": "pessoas",
+      "alt": "Colaborador da APGB em posto de trabalho"
+    },
+    {
+      "source": "IMG-20260713-WA0023.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0023.webp",
+      "category": "pessoas",
+      "alt": "Responsavel da APGB durante actividade de trabalho"
+    },
+    {
+      "source": "IMG-20260713-WA0024.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0024.webp",
+      "category": "pessoas",
+      "alt": "Colaborador da APGB sentado no escritorio"
+    },
+    {
+      "source": "IMG-20260713-WA0025.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0025.webp",
+      "category": "pessoas",
+      "alt": "Responsavel da APGB a trabalhar no escritorio"
+    },
+    {
+      "source": "IMG-20260713-WA0026.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0026.webp",
+      "category": "pessoas",
+      "alt": "Responsavel da APGB em reuniao de trabalho"
+    },
+    {
+      "source": "IMG-20260713-WA0027.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0027.webp",
+      "category": "pessoas",
+      "alt": "Colaborador da APGB em ambiente institucional"
+    },
+    {
+      "source": "IMG-20260713-WA0028.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0028.webp",
+      "category": "pessoas",
+      "alt": "Colaborador da APGB diante de equipamento de trabalho"
+    },
+    {
+      "source": "IMG-20260713-WA0029.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0029.webp",
+      "category": "operacoes",
+      "alt": "Camioes de carga no terminal portuario de Bissau"
+    },
+    {
+      "source": "IMG-20260713-WA0030.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0030.webp",
+      "category": "infraestruturas",
+      "alt": "Entrada e area exterior do terminal portuario"
+    },
+    {
+      "source": "IMG-20260713-WA0031.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0031.webp",
+      "category": "operacoes",
+      "alt": "Camioes alinhados junto aos contentores no porto"
+    },
+    {
+      "source": "IMG-20260713-WA0032.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0032.webp",
+      "category": "operacoes",
+      "alt": "Camiao atravessa a zona de controlo do porto"
+    },
+    {
+      "source": "IMG-20260713-WA0033.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0033.webp",
+      "category": "operacoes",
+      "alt": "Equipamento de movimentacao de carga no terminal"
+    },
+    {
+      "source": "IMG-20260713-WA0034.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0034.webp",
+      "category": "navios",
+      "alt": "Navio cargueiro atracado no Porto de Bissau"
+    },
+    {
+      "source": "IMG-20260713-WA0035.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0035.webp",
+      "category": "operacoes",
+      "alt": "Movimentacao de sacos de carga junto a um navio"
+    },
+    {
+      "source": "oficina.png",
+      "url": "/media/gallery/oficina.webp",
+      "category": "infraestruturas",
+      "alt": "Oficina e armazem de apoio às operações portuárias"
+    },
+    {
+      "source": "IMG-20260713-WA0037.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0037.webp",
+      "category": "infraestruturas",
+      "alt": "Edificio de apoio da APGB no recinto portuario"
+    },
+    {
+      "source": "IMG-20260713-WA0038.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0038.webp",
+      "category": "infraestruturas",
+      "alt": "Edificio principal da APGB no Porto de Bissau"
+    },
+    {
+      "source": "IMG-20260713-WA0039.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0039.webp",
+      "category": "infraestruturas",
+      "alt": "Entrada e controlo de acesso do recinto portuario"
+    },
+    {
+      "source": "IMG-20260713-WA0040.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0040.webp",
+      "category": "infraestruturas",
+      "alt": "Posto clinico do recinto portuario"
+    },
+    {
+      "source": "IMG-20260713-WA0041.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0041.webp",
+      "category": "infraestruturas",
+      "alt": "Area de estacionamento e edificios do porto"
+    },
+    {
+      "source": "edificio-operacoes.png",
+      "url": "/media/gallery/edificio-operacoes.webp",
+      "category": "infraestruturas",
+      "alt": "Edifício de apoio às operações portuárias"
+    },
+    {
+      "source": "IMG-20260713-WA0043.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0043.webp",
+      "category": "navios",
+      "alt": "Cais e navios no Porto de Bissau"
+    },
+    {
+      "source": "IMG-20260713-WA0044.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0044.webp",
+      "category": "navios",
+      "alt": "Grua portuaria e navio durante operacao de carga"
+    },
+    {
+      "source": "IMG-20260713-WA0045.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0045.webp",
+      "category": "operacoes",
+      "alt": "Operacao de carga de sacos junto a um navio"
+    },
+    {
+      "source": "IMG-20260713-WA0046.jpg",
+      "url": "/media/gallery/IMG-20260713-WA0046.webp",
+      "category": "infraestruturas",
+      "alt": "Contentores empilhados no terminal portuario"
+    },
+    {
+      "source": "Domingos-Brito.webp",
+      "url": "/media/gallery/Domingos-Brito.webp",
+      "category": "pessoas",
+      "alt": "Dr. Domingos Brito, Director Administrativo dos Recursos Humanos"
+    },
+    {
+      "source": "Dr-Mamadu-Lamine-Sane.webp",
+      "url": "/media/gallery/Dr-Mamadu-Lamine-Sane.webp",
+      "category": "pessoas",
+      "alt": "Dr. Mamadu Lamine Sane, Director dos Estudos e Planeamento"
+    },
+    {
+      "source": "Dr-Martinho-Fiefe.webp",
+      "url": "/media/gallery/Dr-Martinho-Fiefe.webp",
+      "category": "pessoas",
+      "alt": "Dr. Martinho Fiefe, Director das Operações Portuárias"
+    },
+    {
+      "source": "Dr-Nixon-Sousa.webp",
+      "url": "/media/gallery/Dr-Nixon-Sousa.webp",
+      "category": "pessoas",
+      "alt": "Dr. Nixon Sousa, Director do Gabinete de Auditoria e Controlo Interno"
+    },
+    {
+      "source": "Naio-Brand\u00e3o-Vieira-T\u00e9.webp",
+      "url": "/media/gallery/Naio-Brand\u00e3o-Vieira-T\u00e9.webp",
+      "category": "pessoas",
+      "alt": "Dr. Naio Brandão Vieira Té, Director Financeiro"
+    },
+    {
+      "source": "Quintino-da-Silva-Co.webp",
+      "url": "/media/gallery/Quintino-da-Silva-Co.webp",
+      "category": "pessoas",
+      "alt": "Dr. Quintino da Silva Co, Director Comercial"
+    },
+    {
+      "source": "Virgilio-Carlos-A-Medina.webp",
+      "url": "/media/gallery/Virgilio-Carlos-A-Medina.webp",
+      "category": "pessoas",
+      "alt": "Eng. Virgilio Carlos A. Medina, Director das Infra-estruturas e Equipamentos Portuários"
+    },
+    {
+      "source": "DG-Felix.webp",
+      "url": "/media/gallery/DG-Felix.webp",
+      "category": "pessoas",
+      "alt": "Dr. Felix B. Nandungue, Director-Geral da APGB"
+    },
+    {
+      "source": "Certorio-Biote.jpg",
+      "url": "/media/gallery/Certorio-Biote.webp",
+      "category": "pessoas",
+      "alt": "Dr. Certório Biote, Presidente do Conselho de Administração da APGB"
+    },
+    {
+      "source": "forum-dakar-delegacao.jpg",
+      "url": "/media/gallery/forum-dakar-delegacao.webp",
+      "category": "pessoas",
+      "alt": "Delegação da Guiné-Bissau no fórum de transportes marítimos em Dakar"
+    },
+    {
+      "source": "forum-dakar-sessao-plenaria-1.jpg",
+      "url": "/media/gallery/forum-dakar-sessao-plenaria-1.webp",
+      "category": "pessoas",
+      "alt": "Representantes da Guiné-Bissau durante a sessão do fórum em Dakar"
+    },
+    {
+      "source": "forum-dakar-sessao-plenaria-2.jpg",
+      "url": "/media/gallery/forum-dakar-sessao-plenaria-2.webp",
+      "category": "pessoas",
+      "alt": "Delegados guineenses na sessão plenária do fórum em Dakar"
+    },
+    {
+      "source": "forum-dakar-painel.jpg",
+      "url": "/media/gallery/forum-dakar-painel.webp",
+      "category": "operacoes",
+      "alt": "Painel do Fórum Internacional sobre a Economia Azul em Dakar"
     }
   ],
   "support": [
@@ -499,6 +763,18 @@
   ],
   "documents": [
     {
+      "title": "Apresentação da empresa APGB - Porto de Bissau, Setembro 2025",
+      "url": "/documents/apgb-apresentacao-empresa-setembro-2025.docx"
+    },
+    {
+      "title": "Projecto da orgânica da APGB, 2025",
+      "url": "/documents/projecto-organica-apgb-2025.docx"
+    },
+    {
+      "title": "Boletim Oficial n.º 41 - Estatutos da APGB, 2011",
+      "url": "/documents/boletim-oficial-estatutos-apgb-2011.pdf"
+    },
+    {
       "title": "Estatuto APGB compressed-min",
       "url": "/documents/estatuto-apgb-compressed-min.pdf"
     },
@@ -537,6 +813,10 @@
     {
       "title": "organigrama",
       "url": "/documents/organigrama.pdf"
+    },
+    {
+      "title": "Movimentação de navios e contentores 2026, versão profissional",
+      "url": "/documents/movimentacao-navios-2026-profissional.xlsx"
     }
   ]
 }

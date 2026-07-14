@@ -19,6 +19,32 @@ import { getLocalizedText } from "@/lib/content";
 import { pagePath } from "@/lib/paths";
 import { listFeaturedPublicPages } from "@/server/content/public-content";
 
+import { NewsSlider } from "./news-slider";
+import { HomeHeroSlider } from "./home-hero-slider";
+
+const homeHeroSlides = [
+  {
+    src: "/media/gallery/sede-principal.webp",
+    alt: "Sede principal da Administração dos Portos da Guiné-Bissau",
+  },
+  {
+    src: "/media/gallery/Gemini_Generated_Image_li0268li0268li02.webp",
+    alt: "Entrada e controlo de acesso do Porto de Bissau",
+  },
+  {
+    src: "/media/gallery/edificio-operacoes-2.webp",
+    alt: "Edifício de apoio às operações portuárias",
+  },
+  {
+    src: "/media/gallery/IMG-20260713-WA0032.webp",
+    alt: "Camião atravessa a zona de controlo do Porto de Bissau",
+  },
+  {
+    src: "/media/gallery/IMG-20260713-WA0040.webp",
+    alt: "Posto clínico do recinto portuário",
+  },
+];
+
 const serviceSlugs = [
   { slug: "encontrar-contentor", icon: Boxes },
   { slug: "previsao-chegada", icon: Ship },
@@ -46,8 +72,16 @@ export async function HomeView({ locale }: { locale: Locale }) {
     4,
     "project",
   );
+  const newsItems = await listFeaturedPublicPages(
+    undefined,
+    [
+      getPageBySlug("forum-desenvolvimento-sustentavel-transportes-maritimos-dakar")!,
+      getPageBySlug("inicio-trabalhos-dragagem-porto-bissau")!,
+    ],
+    3,
+    "news",
+  );
   const highlights = await listFeaturedPublicPages(undefined, [
-    getPageBySlug("inicio-trabalhos-dragagem-porto-bissau")!,
     getPageBySlug("investimentos")!,
     getPageBySlug("tarifario")!,
   ], 3);
@@ -55,15 +89,7 @@ export async function HomeView({ locale }: { locale: Locale }) {
   return (
     <>
       <section className="home-hero">
-        <div className="home-hero__photo">
-          <Image
-            src={home.heroImage}
-            alt={getLocalizedText(home.heroAlt, locale)}
-            fill
-            sizes="(max-width: 800px) 100vw, 64vw"
-            priority
-          />
-        </div>
+        <HomeHeroSlider slides={homeHeroSlides} />
         <div className="home-hero__veil" />
         <div className="shell home-hero__content">
           <span className="status-chip">
@@ -153,6 +179,22 @@ export async function HomeView({ locale }: { locale: Locale }) {
               );
             })}
           </div>
+        </div>
+      </section>
+
+      <section className="section section--news">
+        <div className="shell">
+          <div className="section-heading">
+            <div>
+              <h2>{getLocalizedText(getPageBySlug("noticias")!.title, locale)}</h2>
+              <p>{getLocalizedText(getPageBySlug("noticias")!.summary, locale)}</p>
+            </div>
+            <Link href={pagePath(locale, "noticias")}>
+              {ui.viewAll}
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </div>
+          <NewsSlider items={newsItems} locale={locale} />
         </div>
       </section>
 

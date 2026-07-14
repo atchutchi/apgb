@@ -38,7 +38,7 @@ export const primaryNavigation: NavigationItem[] = [
         label: text("Estratégia", "Stratégie", "Strategy"),
         group: true,
       },
-      { slug: "missao-visao-valores", label: text("Missão, Visão e Valores") },
+      { slug: "missao-visao-valores", label: text("Missão, Visão e Atribuições") },
       { slug: "objectivos-estrategicos", label: text("Objectivos estratégicos") },
       { slug: "avaliacao-ambiental", label: text("Avaliação ambiental estratégica") },
       { slug: "investimentos", label: text("Investimentos") },

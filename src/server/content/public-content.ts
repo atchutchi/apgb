@@ -7,6 +7,8 @@ import type { ContentItem, ContentRepository, ContentTranslation } from "./types
 
 type StaticPageGetter = (slug: string) => PageContent | undefined;
 
+const excludedPublicNewsSlugs = new Set(["validacao-editorial-portal-apgb"]);
+
 const locales = ["pt", "fr", "en"] as const;
 
 function translation(item: ContentItem, locale: (typeof locales)[number]): ContentTranslation {
@@ -75,6 +77,7 @@ function parseBody(body: string): Array<{ title: string; text: string }> {
 
 function toPublicPage(item: ContentItem): PageContent {
   const menu = primaryNavigation.find((section) => section.slug === item.slug);
+  const staticPage = getPageBySlug(item.slug);
   return {
     slug: item.slug,
     section: item.section,
@@ -87,6 +90,7 @@ function toPublicPage(item: ContentItem): PageContent {
     galleryUrls: item.galleryUrls,
     publishedAt: item.publishedAt ? localizedDate(item.publishedAt) : undefined,
     featured: item.featured,
+    leadership: staticPage?.leadership,
     menuItems: menu?.children
       ?.filter((child) => !child.group)
       .map((child) => ({
@@ -125,7 +129,8 @@ export async function listFeaturedPublicPages(
       item.featured
       && item.status === "published"
       && !item.deletedAt
-      && (!type || item.type === type),
+      && (!type || item.type === type)
+      && !excludedPublicNewsSlugs.has(item.slug)
     )
     .map(toPublicPage);
   const dynamicSlugs = new Set(dynamic.map((page) => page.slug));

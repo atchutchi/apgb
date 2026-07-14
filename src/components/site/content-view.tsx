@@ -1,4 +1,4 @@
-import { ArrowDownToLine, ArrowRight, FileText } from "lucide-react";
+import { ArrowDownToLine, ArrowRight, Eye, FileText } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -6,9 +6,15 @@ import type { Locale } from "@/config/locales";
 import { primaryNavigation } from "@/config/navigation";
 import { getUi } from "@/config/ui";
 import media from "@/content/media-manifest.json";
-import type { PageContent } from "@/content/pages";
+import { getPageBySlug, type PageContent } from "@/content/pages";
 import { getLocalizedText } from "@/lib/content";
 import { pagePath } from "@/lib/paths";
+import { listFeaturedPublicPages } from "@/server/content/public-content";
+
+import { NewsSlider } from "./news-slider";
+import { OrganizationChart } from "./organization-chart";
+import { ShipStatisticsView } from "./ship-statistics";
+import { LocationMap } from "./location-map";
 
 function documentName(url: string): string {
   return (
@@ -18,8 +24,23 @@ function documentName(url: string): string {
   );
 }
 
-export function ContentView({ locale, page }: { locale: Locale; page: PageContent }) {
+function documentType(url: string): string {
+  return url.split(".").at(-1)?.toUpperCase() || "DOCUMENTO";
+}
+
+export async function ContentView({ locale, page }: { locale: Locale; page: PageContent }) {
   const ui = getUi(locale);
+  const newsItems = page.slug === "noticias"
+    ? await listFeaturedPublicPages(
+        undefined,
+        [
+          getPageBySlug("forum-desenvolvimento-sustentavel-transportes-maritimos-dakar")!,
+          getPageBySlug("inicio-trabalhos-dragagem-porto-bissau")!,
+        ],
+        12,
+        "news",
+      )
+    : [];
   const section = primaryNavigation.find((item) => item.slug === page.section);
   const related = page.menuItems?.length
     ? []
@@ -65,14 +86,13 @@ export function ContentView({ locale, page }: { locale: Locale; page: PageConten
         </div>
       </section>
 
-      <div className="shell article-layout">
+      <div className={`shell article-layout${page.slug === "noticias" ? " article-layout--news" : ""}`}>
         <article className="article">
           {locale !== "pt" && page.summary[locale] === page.summary.pt && (
             <p className="translation-note">{ui.publishedInPt}</p>
           )}
           {!!page.menuItems?.length && (
             <section className="section-menu">
-              <span className="article-index">01</span>
               <h2>{getLocalizedText(page.title, locale)}</h2>
               <div className="section-menu__grid">
                 {page.menuItems.map((item) => (
@@ -85,23 +105,60 @@ export function ContentView({ locale, page }: { locale: Locale; page: PageConten
               </div>
             </section>
           )}
+          {page.slug === "noticias" && (
+            <section className="news-index">
+              <h2>{getLocalizedText(page.title, locale)}</h2>
+              <NewsSlider items={newsItems} locale={locale} />
+            </section>
+          )}
           {page.blocks.map((block, index) => (
             <section key={`${page.slug}-${index}`}>
-              <span className="article-index">{String(index + 1).padStart(2, "0")}</span>
               <h2>{getLocalizedText(block.title, locale)}</h2>
               <p>{getLocalizedText(block.text, locale)}</p>
             </section>
           ))}
-          {page.slug === "organigrama" && (
-            <figure className="support-figure">
-              <Image
-                src="/media/support/organigrama-3.webp"
-                alt="Organigrama da Administração dos Portos da Guiné-Bissau"
-                width={1400}
-                height={800}
-              />
-            </figure>
+          {page.slug === "localizacao" && <LocationMap />}
+          {page.shipStatistics && <ShipStatisticsView data={page.shipStatistics} />}
+          {!!page.leadership?.length && (
+            <section className="leadership-section">
+              <h2>Estrutura de governação</h2>
+              <div className="leadership-groups">
+                {page.leadership.map((group) => (
+                  <section className="leadership-group" key={getLocalizedText(group.title, locale)}>
+                    <h3>{getLocalizedText(group.title, locale)}</h3>
+                    <div className="leadership-grid">
+                      {group.members.map((member) => (
+                        <article
+                          className="leadership-card"
+                          key={getLocalizedText(member.name, locale)}
+                        >
+                          {member.image ? (
+                            <div className="leadership-card__photo">
+                              <Image
+                                src={member.image}
+                                alt={member.alt ? getLocalizedText(member.alt, locale) : getLocalizedText(member.name, locale)}
+                                fill
+                                sizes="(max-width: 800px) 100vw, 220px"
+                              />
+                            </div>
+                          ) : (
+                            <div className="leadership-card__placeholder" aria-label="Fotografia a inserir">
+                              APGB
+                            </div>
+                          )}
+                          <div>
+                            <strong>{getLocalizedText(member.name, locale)}</strong>
+                            <span>{getLocalizedText(member.role, locale)}</span>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            </section>
           )}
+          {page.organization && <OrganizationChart chart={page.organization} locale={locale} />}
           {page.slug === "tarifario" && (
             <div className="support-gallery">
               {media.support
@@ -117,25 +174,32 @@ export function ContentView({ locale, page }: { locale: Locale; page: PageConten
           )}
           {!!page.documentUrls?.length && (
             <section className="documents-block">
-              <span className="article-index">{String(page.blocks.length + 1).padStart(2, "0")}</span>
               <h2>{ui.availableDocuments}</h2>
               <div className="document-list">
                 {page.documentUrls.map((url) => (
-                  <a href={url} key={url} target="_blank" rel="noreferrer">
+                  <article className="document-list__item" key={url}>
                     <FileText size={22} aria-hidden="true" />
                     <span>
                       <strong>{documentName(url)}</strong>
-                      <small>PDF · {ui.openDocument}</small>
+                      <small>{documentType(url)} · {ui.openDocument}</small>
                     </span>
-                    <ArrowDownToLine size={18} aria-hidden="true" />
-                  </a>
+                    <div className="document-list__actions">
+                      <a href={url} target="_blank" rel="noreferrer" className="document-action" title={ui.previewDocument}>
+                        <Eye size={17} aria-hidden="true" />
+                        <span>{ui.previewDocument}</span>
+                      </a>
+                      <a href={url} download className="document-action" title={ui.downloadDocument}>
+                        <ArrowDownToLine size={17} aria-hidden="true" />
+                        <span>{ui.downloadDocument}</span>
+                      </a>
+                    </div>
+                  </article>
                 ))}
               </div>
             </section>
           )}
           {!!page.galleryUrls?.length && (
             <section className="article-photo-story">
-              <span className="article-index">{String(page.blocks.length + 1).padStart(2, "0")}</span>
               <h2>{ui.photoArchive}</h2>
               <div className="article-photo-story__grid">
                 {page.galleryUrls.map((url, index) => {
